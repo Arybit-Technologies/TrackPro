@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>TrackPro | Technical Report</title>
+  <meta name="description" content="Final technical report for TrackPro project - platform design, architecture, Gitflow, and development strategy." />
+  <meta name="keywords" content="TrackPro technical report, GPS tracking system, PHP architecture, Cordova frontend, MySQL, Socket.io PHP, Gitflow, system modules" />
+  <meta name="author" content="Arybit Technologies" />
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="css/styles.css" />
+</head>
+<body>
+<header class="navbar navbar-expand-lg navbar-dark bg-dark">
+  <div class="container">
+    <a class="navbar-brand" href="/">TrackPro</a>
+  </div>
+</header>
+
+<main class="container py-5">
+  <h1 class="text-center mb-5">📄 TrackPro Project: Technical Report</h1>
+
+  <section class="mb-5">
+    <h2>1. Development Strategy</h2>
+    <p>The TrackPro platform is designed to provide real-time GPS tracking, alert management, and device integration via a hybrid mobile and web interface. The development strategy follows Agile methodology, with feature-focused sprints and version-controlled deployments via Git.</p>
+    <ul>
+      <li><strong>Backend:</strong> PHP (Laravel or Slim framework)</li>
+      <li><strong>Frontend:</strong> Cordova (HTML5, CSS3, JS, jQuery)</li>
+      <li><strong>Database:</strong> MySQL</li>
+      <li><strong>Real-Time:</strong> PHP Socket.IO for WebSocket communication</li>
+      <li><strong>AI:</strong> REST APIs for AI route optimization / object recognition</li>
+    </ul>
+  </section>
+
+  <section class="mb-5">
+    <h2>2. Platform Architecture</h2>
+    <p>The architecture consists of multiple integrated services, optimized for scalability and real-time performance.</p>
+    <img src="images/system-architecture.png" alt="TrackPro System Architecture" class="img-fluid mb-3" />
+    <ul>
+      <li><strong>Client:</strong> Cordova Hybrid App (Android/iOS) and Web Interface</li>
+      <li><strong>API Gateway:</strong> RESTful endpoints for frontend-backend interaction</li>
+      <li><strong>Socket Server:</strong> PHP-based Socket.IO server for live location and notifications</li>
+      <li><strong>Database Layer:</strong> MySQL with spatial extensions (e.g., POINT, LINESTRING)</li>
+      <li><strong>AI Layer:</strong> Python Flask APIs for ML models (optional integration)</li>
+    </ul>
+  </section>
+
+  <section class="mb-5">
+    <h2>3. Gitflow Workflow</h2>
+    <p>Version control is managed through Git using the Gitflow branching model:</p>
+    <ul>
+      <li><code>main</code> — Production-ready code</li>
+      <li><code>develop</code> — Latest features in development</li>
+      <li><code>feature/*</code> — New features (e.g., feature/alert-module)</li>
+      <li><code>release/*</code> — Pre-release staging branches</li>
+      <li><code>hotfix/*</code> — Emergency patches directly into <code>main</code></li>
+    </ul>
+    <p>CI/CD pipelines auto-deploy updates to staging and production environments.</p>
+  </section>
+
+  <section class="mb-5">
+    <h2>4. System Modules</h2>
+    <p>The final TrackPro system includes the following major modules:</p>
+    <ul>
+      <li><strong>Authentication:</strong> Secure login, JWT/session management</li>
+      <li><strong>Device Management:</strong> Register/manage GPS devices with IMEI, SIM</li>
+      <li><strong>Live Tracking:</strong> Real-time map display using WebSockets</li>
+      <li><strong>Geofencing:</strong> Circular/polygonal zones with entry/exit alerts</li>
+      <li><strong>Trip History:</strong> Replay of previous journeys with timestamps</li>
+      <li><strong>Reports & Analytics:</strong> Downloadable usage, route, and fuel reports</li>
+      <li><strong>AI Assistant:</strong> Optional AI API integration for route suggestion and anomaly detection</li>
+    </ul>
+  </section>
+
+  <section>
+    <h2>5. Real-Time Communication</h2>
+    <p>The system uses PHP-based <code>socket.io</code> with Redis or Workerman as the event loop handler. Vehicle coordinates are broadcast to subscribed clients over WebSockets every 5–10 seconds.</p>
+    <pre><code>// Socket.IO PHP pseudo-code
+$socket->on('location_update', function ($data) {
+  // Broadcast to all clients
+  $socket->emit('vehicle_location', $data);
+});</code></pre>
+  </section>
+</main>
+
+<footer class="bg-dark text-white py-4">
+  <div class="container text-center">
+    <p>For internal use only | &copy; 2025 TrackPro by Arybit Technologies</p>
+  </div>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
