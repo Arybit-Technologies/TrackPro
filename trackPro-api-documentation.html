@@ -35,442 +35,95 @@
 
     <!-- Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
-
-    <!-- Prism.js for Code Highlighting -->
+    <!-- Font Awesome 6.6.0 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" integrity="sha512-Kc323vGBEqzTmouAECnVceyQqyqdsSiqLQISBL29aUW4U/M7pSPA/gEUZQqv1cwx4OnYxTxve5UMg5GT6L4JJg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <!-- Bootstrap 5.3.3 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <!-- PrismJS for Code Highlighting -->
     <link href="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/themes/prism.min.css" rel="stylesheet">
-
     <!-- Favicon -->
-    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='0.9em' font-size='90'>🚗</text></svg>">
-
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        :root {
-            --primary: #6366f1;
-            --primary-dark: #4f46e5;
-            --secondary: #06b6d4;
-            --accent: #f59e0b;
-            --success: #10b981;
-            --dark: #0f172a;
-            --gray-50: #f8fafc;
-            --gray-100: #f1f5f9;
-            --gray-800: #1e293b;
-            --gray-900: #0f172a;
-        }
-
-        body {
-            font-family: 'Inter', sans-serif;
-            line-height: 1.6;
-            color: var(--dark);
-            overflow-x: hidden;
-            background: var(--gray-50);
-        }
-
-        /* Navigation */
-        .navbar {
-            position: fixed;
-            top: 0;
-            width: 100%;
-            z-index: 1000;
-            background: rgba(15, 23, 42, 0.95);
-            -webkit-backdrop-filter: blur(20px);
-            backdrop-filter: blur(20px);
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-            transition: all 0.3s ease;
-        }
-
-        .nav-container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 1rem 2rem;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .logo {
-            font-size: 1.5rem;
-            font-weight: 800;
-            color: white;
-            text-decoration: none;
-            background: linear-gradient(135deg, var(--primary), var(--secondary));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-        }
-
-        .nav-menu {
-            display: flex;
-            list-style: none;
-            gap: 2rem;
-        }
-
-        .nav-menu a {
-            color: rgba(255, 255, 255, 0.8);
-            text-decoration: none;
-            font-weight: 500;
-            transition: all 0.3s ease;
-            position: relative;
-        }
-
-        .nav-menu a:hover {
-            color: white;
-            transform: translateY(-2px);
-        }
-
-        .nav-menu a.active {
-            color: white;
-            font-weight: 600;
-        }
-
-        .nav-menu a.active::after {
-            content: '';
-            position: absolute;
-            bottom: -5px;
-            left: 0;
-            width: 100%;
-            height: 2px;
-            background: var(--primary);
-        }
-
-        /* Main Content */
-        .main-content {
-            max-width: 1200px;
-            margin: 8rem auto 4rem;
-            padding: 0 2rem;
-            display: flex;
-            gap: 2rem;
-        }
-
-        .content {
-            flex: 3;
-        }
-
-        .section-header {
-            text-align: center;
-            margin-bottom: 3rem;
-        }
-
-        .section-title {
-            font-size: 2.5rem;
-            font-weight: 800;
-            margin-bottom: 1rem;
-            background: linear-gradient(135deg, var(--dark), var(--gray-800));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-        }
-
-        .section-subtitle {
-            font-size: 1.25rem;
-            color: var(--gray-800);
-            opacity: 0.8;
-        }
-
-        /* Sidebar */
-        .sidebar {
-            flex: 1;
-            position: sticky;
-            top: 6rem;
-            align-self: flex-start;
-            background: white;
-            border-radius: 10px;
-            padding: 1.5rem;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
-        }
-
-        .sidebar h3 {
-            font-size: 1.25rem;
-            font-weight: 700;
-            margin-bottom: 1rem;
-            color: var(--dark);
-        }
-
-        .sidebar ul {
-            list-style: none;
-        }
-
-        .sidebar a {
-            display: block;
-            padding: 0.5rem 0;
-            color: var(--gray-800);
-            text-decoration: none;
-            transition: all 0.3s ease;
-        }
-
-        .sidebar a:hover {
-            color: var(--primary);
-            transform: translateX(5px);
-        }
-
-        /* API Sections */
-        .api-section {
-            background: white;
-            padding: 2rem;
-            border-radius: 20px;
-            margin-bottom: 2rem;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
-            transition: all 0.4s ease;
-        }
-
-        .api-section:hover {
-            transform: translateY(-10px);
-            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
-        }
-
-        .api-section h2 {
-            font-size: 1.75rem;
-            font-weight: 700;
-            margin-bottom: 1rem;
-            color: var(--dark);
-        }
-
-        .api-section h3 {
-            font-size: 1.25rem;
-            font-weight: 600;
-            margin: 1.5rem 0 1rem;
-            color: var(--dark);
-        }
-
-        .api-section p {
-            color: var(--gray-800);
-            opacity: 0.8;
-            margin-bottom: 1rem;
-        }
-
-        .api-section ul {
-            list-style: none;
-            margin-bottom: 1rem;
-        }
-
-        .api-section li {
-            margin-bottom: 0.5rem;
-            color: var(--gray-800);
-        }
-
-        .api-section li strong {
-            color: var(--dark);
-        }
-
-        /* Code Blocks */
-        pre {
-            background: var(--gray-100);
-            padding: 1rem;
-            border-radius: 10px;
-            overflow-x: auto;
-            margin-bottom: 1rem;
-        }
-
-        code {
-            font-family: 'Consolas', monospace;
-            font-size: 0.9rem;
-        }
-
-        /* Custom Table */
-        .api-table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-bottom: 1rem;
-            background: white;
-            border-radius: 10px;
-            overflow: hidden;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
-        }
-
-        .api-table th,
-        .api-table td {
-            padding: 1rem;
-            text-align: left;
-            border-bottom: 1px solid rgba(99, 102, 241, 0.1);
-        }
-
-        .api-table th {
-            background: var(--primary);
-            color: white;
-            font-weight: 600;
-        }
-
-        .api-table tr:last-child td {
-            border-bottom: none;
-        }
-
-        .api-table tr:hover {
-            background: var(--gray-50);
-        }
-
-        /* Prism.js Custom Styling */
-        pre[class*="language-"] {
-            background: var(--gray-100);
-            border: 1px solid rgba(99, 102, 241, 0.1);
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
-        }
-
-        /* Footer */
-        .footer {
-            background: var(--dark);
-            color: white;
-            padding: 3rem 0 1rem;
-            text-align: center;
-        }
-
-        .footer-container {
-            max-width: 800px;
-            margin: 0 auto;
-            padding: 0 2rem;
-        }
-
-        .footer-links {
-            display: flex;
-            justify-content: center;
-            gap: 2rem;
-            margin-bottom: 2rem;
-        }
-
-        .footer-links a {
-            color: rgba(255, 255, 255, 0.7);
-            text-decoration: none;
-            transition: all 0.3s ease;
-        }
-
-        .footer-links a:hover {
-            color: var(--primary);
-            transform: translateY(-2px);
-        }
-
-        .social-links {
-            display: flex;
-            justify-content: center;
-            gap: 1rem;
-            margin-bottom: 2rem;
-        }
-
-        .social-links a {
-            width: 50px;
-            height: 50px;
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            text-decoration: none;
-            transition: all 0.3s ease;
-        }
-
-        .social-links a:hover {
-            background: var(--primary);
-            transform: translateY(-3px);
-        }
-
-        /* Animations */
-        @keyframes slideInUp {
-            from {
-                opacity: 0;
-                transform: translateY(50px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        /* Mobile Responsiveness */
-        @media (max-width: 768px) {
-            .nav-menu {
-                display: none;
-            }
-
-            .main-content {
-                flex-direction: column;
-            }
-
-            .sidebar {
-                position: static;
-                margin-bottom: 2rem;
-            }
-
-            .section-title {
-                font-size: 2rem;
-            }
-        }
-
-        /* Smooth scrolling */
-        html {
-            scroll-behavior: smooth;
-        }
-    </style>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='0.9em' font-size='90'>🚗📍</text></svg>">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="css/styles.css">
 </head>
 <body>
+    <div class="loading" id="loading">
+        <div class="spinner"></div>
+    </div>
 
-    <nav class="navbar" id="navbar">
-        <div class="nav-container">
-            <a href="/" class="logo">🚗 TrackPro</a>
-            <ul class="nav-menu">
-                <li><a href="/#home">Home</a></li>
-                <li><a href="trackPro-features.html">Features</a></li>
-                <li><a href="trackPro-how-it-works.html">How It Works</a></li>
-                <li><a href="trackPro-device-docs.html">Device Docs</a></li>
-                <li><a href="trackPro-integration-and-docs.html">Integration & Docs</a></li>
-                <li><a href="trackPro-pricing.html">Pricing</a></li>
-                <li><a href="/#contact">Contact</a></li>
+    <header role="banner" id="header">
+      <nav class="navbar navbar-expand-lg navbar-dark fixed-top" id="navbar">
+        <div class="container nav-container">
+          <a class="navbar-brand logo" href="/">🚗📍 TrackPro</a>
+          <button class="navbar-toggler d-lg-none" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+          </button>
+          <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav ms-auto nav-menu">
+              <li class="nav-item"><a class="nav-link" href="/#home">Home</a></li>
+              <li class="nav-item"><a class="nav-link" href="trackPro-features.html">Features</a></li>
+              <li class="nav-item"><a class="nav-link" href="trackPro-how-it-works.html">How It Works</a></li>
+              <li class="nav-item"><a class="nav-link" href="trackPro-device-docs.html">Device Docs</a></li>
+              <li class="nav-item"><a class="nav-link" href="trackPro-integration-and-docs.html">Integration & Docs</a></li>
+              <li class="nav-item"><a class="nav-link" href="trackPro-pricing.html">Pricing</a></li>
+              <li class="nav-item"><a class="nav-link" href="/#contact">Contact</a></li>
+              <li class="nav-item"><a class="nav-link" href="#" id="toggleThemeBtn"><i class="fas fa-moon"></i> Dark Mode</a></li>
             </ul>
+          </div>
         </div>
-    </nav>
+      </nav>
+    </header>
 
-    <main class="main-content">
-        <aside class="sidebar">
-            <h3>API Contents</h3>
-            <ul>
-                <li><a href="#getting-started">Getting Started</a></li>
-                <li><a href="#api-endpoints">API Endpoints</a></li>
-                <li><a href="#error-handling">Error Handling</a></li>
-                <li><a href="#best-practices">Best Practices</a></li>
-                <li><a href="#resources">Resources</a></li>
-            </ul>
-        </aside>
-
-        <div class="content">
-            <div class="section-header">
-                <h1 class="section-title">TrackPro API Documentation</h1>
-                <p class="section-subtitle">Integrate real-time GPS tracking, geofencing, and device management with your applications using TrackPro’s RESTful API.</p>
-            </div>
-
-            <section class="api-section" id="getting-started">
-                <h2><i class="fas fa-key"></i> Getting Started</h2>
-                <p>The TrackPro API enables developers to manage GPS devices, track locations, and configure alerts programmatically. All requests use HTTPS and return JSON with UTF-8 encoding.</p>
-                <h3>Base URL</h3>
-                <pre><code>https://api.trackpro.arybit.co.ke/v1</code></pre>
-                <h3>Authentication</h3>
-                <p>Use a Bearer token in the <code>Authorization</code> header. Get your API key from the <a href="https://trackpro.arybit.co.ke">TrackPro Dashboard</a>.</p>
-                <pre><code class="language-http">Authorization: Bearer your_api_key</code></pre>
-                <p><strong>Note:</strong> Tokens expire after 2 hours. Refresh every 90 minutes to avoid interruptions.</p>
-                <h3>Rate Limits</h3>
-                <p>100 requests per minute per IP. Contact <a href="mailto:support@trackpro.arybit.co.ke">support@trackpro.arybit.co.ke</a> to request an increase.</p>
-            </section>
-
-            <section class="api-section" id="api-endpoints">
-                <h2><i class="fas fa-plug"></i> API Endpoints</h2>
-                <p>Core endpoints for interacting with TrackPro. Responses include a <code>code</code> (0 for success, non-zero for errors) and a <code>record</code> or <code>message</code> field.</p>
-
-                <h3>Get Access Token</h3>
-                <p>Generate a new access token for authentication.</p>
-                <ul>
-                    <li><strong>Endpoint:</strong> <code>POST /authorization</code></li>
-                    <li><strong>Parameters:</strong>
-                        <ul>
-                            <li><strong>account</strong> (string, required): Your TrackPro username.</li>
-                            <li><strong>time</strong> (integer, required): Current UNIX timestamp.</li>
-                            <li><strong>signature</strong> (string, required): MD5(MD5(password) + time).</li>
-                        </ul>
-                    </li>
+    <main class="main-content container">
+        <div class="row">
+            <aside class="sidebar col-lg-3">
+                <h3>API Contents</h3>
+                <ul class="list-unstyled">
+                    <li><a class="sidebar-link" href="#getting-started">Getting Started</a></li>
+                    <li><a class="sidebar-link" href="#api-endpoints">API Endpoints</a></li>
+                    <li><a class="sidebar-link" href="#error-handling">Error Handling</a></li>
+                    <li><a class="sidebar-link" href="#best-practices">Best Practices</a></li>
+                    <li><a class="sidebar-link" href="#resources">Resources</a></li>
                 </ul>
-                <p><strong>Example Request:</strong></p>
-                <pre><code class="language-javascript">const axios = require('axios');
+            </aside>
+
+            <div class="content col-lg-9">
+                <div class="section-header text-center">
+                    <h1 class="section-title">TrackPro API Documentation</h1>
+                    <p class="section-subtitle">Integrate real-time GPS tracking, geofencing, and device management with your applications using TrackPro’s RESTful API.</p>
+                </div>
+
+                <section class="api-section" id="getting-started">
+                    <h2><i class="fas fa-key"></i> Getting Started</h2>
+                    <p>The TrackPro API enables developers to manage GPS devices, track locations, and configure alerts programmatically. All requests use HTTPS and return JSON with UTF-8 encoding.</p>
+                    <h3>Base URL</h3>
+                    <pre><code class="language-http">https://api.trackpro.arybit.co.ke/v1</code></pre>
+                    <h3>Authentication</h3>
+                    <p>Use a Bearer token in the <code>Authorization</code> header. Get your API key from the <a href="https://trackpro.arybit.co.ke">TrackPro Dashboard</a>.</p>
+                    <pre><code class="language-http">Authorization: Bearer your_api_key</code></pre>
+                    <p><strong>Note:</strong> Tokens expire after 2 hours. Refresh every 90 minutes to avoid interruptions.</p>
+                    <h3>Rate Limits</h3>
+                    <p>100 requests per minute per IP. Contact <a href="mailto:support@trackpro.arybit.co.ke">support@trackpro.arybit.co.ke</a> to request an increase.</p>
+                </section>
+
+                <section class="api-section" id="api-endpoints">
+                    <h2><i class="fas fa-plug"></i> API Endpoints</h2>
+                    <p>Core endpoints for interacting with TrackPro. Responses include a <code>code</code> (0 for success, non-zero for errors) and a <code>record</code> or <code>message</code> field.</p>
+
+                    <h3>Get Access Token</h3>
+                    <p>Generate a new access token for authentication.</p>
+                    <ul class="list-unstyled">
+                        <li><strong>Endpoint:</strong> <code>POST /authorization</code></li>
+                        <li><strong>Parameters:</strong>
+                            <ul>
+                                <li><strong>account</strong> (string, required): Your TrackPro username.</li>
+                                <li><strong>time</strong> (integer, required): Current UNIX timestamp.</li>
+                                <li><strong>signature</strong> (string, required): MD5(MD5(password) + time).</li>
+                            </ul>
+                        </li>
+                    </ul>
+                    <p><strong>Example Request:</strong></p>
+                    <pre><code class="language-javascript">const axios = require('axios');
 const crypto = require('crypto');
 
 const account = 'your_username';
@@ -490,8 +143,8 @@ axios.post('https://api.trackpro.arybit.co.ke/v1/authorization', {
   console.error('Error:', error.response.data);
 });
 </code></pre>
-                <p><strong>Example Response:</strong></p>
-                <pre><code class="language-json">{
+                    <p><strong>Example Response:</strong></p>
+                    <pre><code class="language-json">{
   "code": 0,
   "record": {
     "access_token": "your_api_key",
@@ -500,19 +153,19 @@ axios.post('https://api.trackpro.arybit.co.ke/v1/authorization', {
 }
 </code></pre>
 
-                <h3>Get Latest Device Coordinates</h3>
-                <p>Retrieve the latest GPS coordinates for one or more devices.</p>
-                <ul>
-                    <li><strong>Endpoint:</strong> <code>GET /tracking/latest</code></li>
-                    <li><strong>Parameters:</strong>
-                        <ul>
-                            <li><strong>access_token</strong> (string, required): Bearer token.</li>
-                            <li><strong>imeis</strong> (string, required): Comma-separated device IMEIs.</li>
-                        </ul>
-                    </li>
-                </ul>
-                <p><strong>Example Request:</strong></p>
-                <pre><code class="language-javascript">axios.get('https://api.trackpro.arybit.co.ke/v1/tracking/latest', {
+                    <h3>Get Latest Device Coordinates</h3>
+                    <p>Retrieve the latest GPS coordinates for one or more devices.</p>
+                    <ul class="list-unstyled">
+                        <li><strong>Endpoint:</strong> <code>GET /tracking/latest</code></li>
+                        <li><strong>Parameters:</strong>
+                            <ul>
+                                <li><strong>access_token</strong> (string, required): Bearer token.</li>
+                                <li><strong>imeis</strong> (string, required): Comma-separated device IMEIs.</li>
+                            </ul>
+                        </li>
+                    </ul>
+                    <p><strong>Example Request:</strong></p>
+                    <pre><code class="language-javascript">axios.get('https://api.trackpro.arybit.co.ke/v1/tracking/latest', {
   params: { access_token: 'your_api_key', imeis: '123456789012345,678901234567890' },
   headers: { 'Authorization': 'Bearer your_api_key' }
 }).then(response => {
@@ -521,8 +174,8 @@ axios.post('https://api.trackpro.arybit.co.ke/v1/authorization', {
   console.error('Error:', error.response.data);
 });
 </code></pre>
-                <p><strong>Example Response:</strong></p>
-                <pre><code class="language-json">{
+                    <p><strong>Example Response:</strong></p>
+                    <pre><code class="language-json">{
   "code": 0,
   "record": [
     {
@@ -539,20 +192,20 @@ axios.post('https://api.trackpro.arybit.co.ke/v1/authorization', {
 }
 </code></pre>
 
-                <h3>Send Device Command</h3>
-                <p>Send commands to devices (e.g., enable/disable tracking, engine cutoff).</p>
-                <ul>
-                    <li><strong>Endpoint:</strong> <code>POST /command/send</code></li>
-                    <li><strong>Parameters:</strong>
-                        <ul>
-                            <li><strong>access_token</strong> (string, required): Bearer token.</li>
-                            <li><strong>imei</strong> (string, required): Device IMEI.</li>
-                            <li><strong>command</strong> (string, required): Command (e.g., <code>RELAY,1</code>).</li>
-                        </ul>
-                    </li>
-                </ul>
-                <p><strong>Example Request:</strong></p>
-                <pre><code class="language-javascript">axios.post('https://api.trackpro.arybit.co.ke/v1/command/send', {
+                    <h3>Send Device Command</h3>
+                    <p>Send commands to devices (e.g., enable/disable tracking, engine cutoff).</p>
+                    <ul class="list-unstyled">
+                        <li><strong>Endpoint:</strong> <code>POST /command/send</code></li>
+                        <li><strong>Parameters:</strong>
+                            <ul>
+                                <li><strong>access_token</strong> (string, required): Bearer token.</li>
+                                <li><strong>imei</strong> (string, required): Device IMEI.</li>
+                                <li><strong>command</strong> (string, required): Command (e.g., <code>RELAY,1</code>).</li>
+                            </ul>
+                        </li>
+                    </ul>
+                    <p><strong>Example Request:</strong></p>
+                    <pre><code class="language-javascript">axios.post('https://api.trackpro.arybit.co.ke/v1/command/send', {
   access_token: 'your_api_key',
   imei: '123456789012345',
   command: 'RELAY,1'
@@ -564,8 +217,8 @@ axios.post('https://api.trackpro.arybit.co.ke/v1/authorization', {
   console.error('Error:', error.response.data);
 });
 </code></pre>
-                <p><strong>Example Response:</strong></p>
-                <pre><code class="language-json">{
+                    <p><strong>Example Response:</strong></p>
+                    <pre><code class="language-json">{
   "code": 0,
   "record": {
     "command_id": "cmd_123456",
@@ -573,26 +226,26 @@ axios.post('https://api.trackpro.arybit.co.ke/v1/authorization', {
   }
 }
 </code></pre>
-                <p><strong>Note:</strong> Poll <code>/command/status</code> every 1 second (up to 30 times) to check status.</p>
+                    <p><strong>Note:</strong> Poll <code>/command/status</code> every 1 second (up to 30 times) to check status.</p>
 
-                <h3>Create Geofence</h3>
-                <p>Create a circular geofence for a device.</p>
-                <ul>
-                    <li><strong>Endpoint:</strong> <code>POST /geofence/create</code></li>
-                    <li><strong>Parameters:</strong>
-                        <ul>
-                            <li><strong>access_token</strong> (string, required): Bearer token.</li>
-                            <li><strong>imei</strong> (string, required): Device IMEI.</li>
-                            <li><strong>geofencename</strong> (string, required): Geofence name.</li>
-                            <li><strong>alarmtype</strong> (integer, required): 0 (enter), 1 (exit), 2 (both).</li>
-                            <li><strong>longitude</strong> (float, required): Center longitude.</li>
-                            <li><strong>latitude</strong> (float, required): Center latitude.</li>
-                            <li><strong>radius</strong> (integer, required): Radius in meters.</li>
-                        </ul>
-                    </li>
-                </ul>
-                <p><strong>Example Request:</strong></p>
-                <pre><code class="language-javascript">axios.post('https://api.trackpro.arybit.co.ke/v1/geofence/create', {
+                    <h3>Create Geofence</h3>
+                    <p>Create a circular geofence for a device.</p>
+                    <ul class="list-unstyled">
+                        <li><strong>Endpoint:</strong> <code>POST /geofence/create</code></li>
+                        <li><strong>Parameters:</strong>
+                            <ul>
+                                <li><strong>access_token</strong> (string, required): Bearer token.</li>
+                                <li><strong>imei</strong> (string, required): Device IMEI.</li>
+                                <li><strong>geofencename</strong> (string, required): Geofence name.</li>
+                                <li><strong>alarmtype</strong> (integer, required): 0 (enter), 1 (exit), 2 (both).</li>
+                                <li><strong>longitude</strong> (float, required): Center longitude.</li>
+                                <li><strong>latitude</strong> (float, required): Center latitude.</li>
+                                <li><strong>radius</strong> (integer, required): Radius in meters.</li>
+                            </ul>
+                        </li>
+                    </ul>
+                    <p><strong>Example Request:</strong></p>
+                    <pre><code class="language-javascript">axios.post('https://api.trackpro.arybit.co.ke/v1/geofence/create', {
   access_token: 'your_api_key',
   imei: '123456789012345',
   geofencename: 'home',
@@ -608,8 +261,8 @@ axios.post('https://api.trackpro.arybit.co.ke/v1/authorization', {
   console.error('Error:', error.response.data);
 });
 </code></pre>
-                <p><strong>Example Response:</strong></p>
-                <pre><code class="language-json">{
+                    <p><strong>Example Response:</strong></p>
+                    <pre><code class="language-json">{
   "code": 0,
   "record": {
     "geofence_id": "gf_123456",
@@ -619,18 +272,18 @@ axios.post('https://api.trackpro.arybit.co.ke/v1/authorization', {
 }
 </code></pre>
 
-                <h3>Get Device List</h3>
-                <p>Retrieve devices associated with your account (max 500 devices).</p>
-                <ul>
-                    <li><strong>Endpoint:</strong> <code>GET /devices</code></li>
-                    <li><strong>Parameters:</strong>
-                        <ul>
-                            <li><strong>access_token</strong> (string, required): Bearer token.</li>
-                        </ul>
-                    </li>
-                </ul>
-                <p><strong>Example Request:</strong></p>
-                <pre><code class="language-javascript">axios.get('https://api.trackpro.arybit.co.ke/v1/devices', {
+                    <h3>Get Device List</h3>
+                    <p>Retrieve devices associated with your account (max 500 devices).</p>
+                    <ul class="list-unstyled">
+                        <li><strong>Endpoint:</strong> <code>GET /devices</code></li>
+                        <li><strong>Parameters:</strong>
+                            <ul>
+                                <li><strong>access_token</strong> (string, required): Bearer token.</li>
+                            </ul>
+                        </li>
+                    </ul>
+                    <p><strong>Example Request:</strong></p>
+                    <pre><code class="language-javascript">axios.get('https://api.trackpro.arybit.co.ke/v1/devices', {
   params: { access_token: 'your_api_key' },
   headers: { 'Authorization': 'Bearer your_api_key' }
 }).then(response => {
@@ -639,8 +292,8 @@ axios.post('https://api.trackpro.arybit.co.ke/v1/authorization', {
   console.error('Error:', error.response.data);
 });
 </code></pre>
-                <p><strong>Example Response:</strong></p>
-                <pre><code class="language-json">{
+                    <p><strong>Example Response:</strong></p>
+                    <pre><code class="language-json">{
   "code": 0,
   "record": [
     {
@@ -652,69 +305,70 @@ axios.post('https://api.trackpro.arybit.co.ke/v1/authorization', {
   ]
 }
 </code></pre>
-            </section>
+                </section>
 
-            <section class="api-section" id="error-handling">
-                <h2><i class="fas fa-exclamation-triangle"></i> Error Handling</h2>
-                <p>Handle errors based on the <code>code</code> field in responses.</p>
-                <table class="api-table">
-                    <thead>
-                        <tr>
-                            <th>Code</th>
-                            <th>HTTP Status</th>
-                            <th>Description</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr><td>0</td><td>200</td><td>Success</td></tr>
-                        <tr><td>1</td><td>401</td><td>Invalid or expired token</td></tr>
-                        <tr><td>2</td><td>400</td><td>Invalid parameters</td></tr>
-                        <tr><td>3</td><td>429</td><td>Rate limit exceeded</td></tr>
-                        <tr><td>4</td><td>404</td><td>Resource not found</td></tr>
-                    </tbody>
-                </table>
-                <p><strong>Example Error Response:</strong></p>
-                <pre><code class="language-json">{
+                <section class="api-section" id="error-handling">
+                    <h2><i class="fas fa-exclamation-triangle"></i> Error Handling</h2>
+                    <p>Handle errors based on the <code>code</code> field in responses.</p>
+                    <table class="table table-hover api-table">
+                        <thead>
+                            <tr>
+                                <th scope="col">Code</th>
+                                <th scope="col">HTTP Status</th>
+                                <th scope="col">Description</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr><td>0</td><td>200</td><td>Success</td></tr>
+                            <tr><td>1</td><td>401</td><td>Invalid or expired token</td></tr>
+                            <tr><td>2</td><td>400</td><td>Invalid parameters</td></tr>
+                            <tr><td>3</td><td>429</td><td>Rate limit exceeded</td></tr>
+                            <tr><td>4</td><td>404</td><td>Resource not found</td></tr>
+                        </tbody>
+                    </table>
+                    <p><strong>Example Error Response:</strong></p>
+                    <pre><code class="language-json">{
   "code": 1,
   "message": "Invalid or expired access token"
 }
 </code></pre>
-            </section>
+                </section>
 
-            <section class="api-section" id="best-practices">
-                <h2><i class="fas fa-tools"></i> Best Practices</h2>
-                <ul>
-                    <li><strong>Token Management:</strong> Refresh tokens every 90 minutes to avoid interruptions.</li>
-                    <li><strong>Rate Limiting:</strong> Use exponential backoff for <code>429</code> errors.</li>
-                    <li><strong>Data Validation:</strong> Validate IMEIs and coordinates before requests.</li>
-                    <li><strong>Logging:</strong> Log all API responses for debugging.</li>
-                    <li><strong>Secure Storage:</strong> Store API keys securely, avoiding hardcoding.</li>
-                    <li><strong>Webhook Support:</strong> Configure webhooks for real-time updates (contact <a href="mailto:support@trackpro.arybit.co.ke">support</a>).</li>
-                </ul>
-            </section>
+                <section class="api-section" id="best-practices">
+                    <h2><i class="fas fa-tools"></i> Best Practices</h2>
+                    <ul class="list-unstyled">
+                        <li><strong>Token Management:</strong> Refresh tokens every 90 minutes to avoid interruptions.</li>
+                        <li><strong>Rate Limiting:</strong> Use exponential backoff for <code>429</code> errors.</li>
+                        <li><strong>Data Validation:</strong> Validate IMEIs and coordinates before requests.</li>
+                        <li><strong>Logging:</strong> Log all API responses for debugging.</li>
+                        <li><strong>Secure Storage:</strong> Store API keys securely, avoiding hardcoding.</li>
+                        <li><strong>Webhook Support:</strong> Configure webhooks for real-time updates (contact <a href="mailto:support@trackpro.arybit.co.ke">support</a>).</li>
+                    </ul>
+                </section>
 
-            <section class="api-section" id="resources">
-                <h2><i class="fas fa-book"></i> Additional Resources</h2>
-                <ul>
-                    <li><a href="https://trackpro.arybit.co.ke">TrackPro Dashboard</a></li>
-                    <li><a href="mailto:support@trackpro.arybit.co.ke">Support Contact</a></li>
-                    <li><a href="https://docs.mapbox.com">Mapbox Documentation</a> for map integration</li>
-                    <li><a href="https://teltonika-gps.com">Teltonika Support</a></li>
-                    <li><a href="https://queclink.com">Queclink Support</a></li>
-                    <li><a href="https://concox.com">Concox Support</a></li>
-                </ul>
-            </section>
+                <section class="api-section" id="resources">
+                    <h2><i class="fas fa-book"></i> Additional Resources</h2>
+                    <ul class="list-unstyled">
+                        <li><a href="https://trackpro.arybit.co.ke">TrackPro Dashboard</a></li>
+                        <li><a href="mailto:support@trackpro.arybit.co.ke">Support Contact</a></li>
+                        <li><a href="https://docs.mapbox.com">Mapbox Documentation</a> for map integration</li>
+                        <li><a href="https://teltonika-gps.com">Teltonika Support</a></li>
+                        <li><a href="https://queclink.com">Queclink Support</a></li>
+                        <li><a href="https://concox.com">Concox Support</a></li>
+                    </ul>
+                </section>
+            </div>
         </div>
     </main>
 
-    <footer class="footer">
-        <div class="footer-container">
-            <div class="footer-links">
+    <footer class="footer" id="contact">
+        <div class="footer-container container text-center">
+            <div class="footer-links d-flex justify-content-center gap-3 mb-3">
                 <a href="mailto:support@trackpro.arybit.co.ke">support@trackpro.arybit.co.ke</a>
                 <span>|</span>
                 <a href="tel:+254720989818">+254 720 989 818</a>
             </div>
-            <div class="social-links">
+            <div class="social-links d-flex justify-content-center gap-3 mb-3">
                 <a href="https://twitter.com/trackpro_arybit" aria-label="Twitter">
                     <i class="fab fa-x-twitter"></i>
                 </a>
@@ -729,32 +383,13 @@ axios.post('https://api.trackpro.arybit.co.ke/v1/authorization', {
         </div>
     </footer>
 
+    <!-- Bootstrap 5.3.3 JS Bundle -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+    <!-- PrismJS -->
     <script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/prism.min.js"></script>
+    <!-- Custom JS -->
+    <script src="js/index.js"></script>
     <script>
-        // Navbar scroll effect
-        window.addEventListener('scroll', function() {
-            const navbar = document.getElementById('navbar');
-            if (window.scrollY > 100) {
-                navbar.style.background = 'rgba(15, 23, 42, 0.98)';
-            } else {
-                navbar.style.background = 'rgba(15, 23, 42, 0.95)';
-            }
-        });
-
-        // Smooth scrolling for navigation and sidebar links
-        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-            anchor.addEventListener('click', function (e) {
-                e.preventDefault();
-                const target = document.querySelector(this.getAttribute('href'));
-                if (target) {
-                    target.scrollIntoView({
-                        behavior: 'smooth',
-                        block: 'start'
-                    });
-                }
-            });
-        });
-
         // Intersection Observer for animations
         const observerOptions = {
             threshold: 0.1,

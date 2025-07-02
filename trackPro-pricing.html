@@ -55,715 +55,217 @@
 
     <!-- Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
-
+    <!-- Font Awesome 6.6.0 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" integrity="sha512-Kc323vGBEqzTmouAECnVceyQqyqdsSiqLQISBL29aUW4U/M7pSPA/gEUZQqv1cwx4OnYxTxve5UMg5GT6L4JJg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <!-- Bootstrap 5.3.3 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
     <!-- Favicon -->
-    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='0.9em' font-size='90'>🚗</text></svg>">
-
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        :root {
-            --primary: #6366f1;
-            --primary-dark: #4f46e5;
-            --secondary: #06b6d4;
-            --accent: #f59e0b;
-            --success: #10b981;
-            --dark: #0f172a;
-            --gray-50: #f8fafc;
-            --gray-100: #f1f5f9;
-            --gray-800: #1e293b;
-            --gray-900: #0f172a;
-        }
-
-        body {
-            font-family: 'Inter', sans-serif;
-            line-height: 1.6;
-            color: var(--dark);
-            overflow-x: hidden;
-        }
-
-        /* Navigation */
-        .navbar {
-            position: fixed;
-            top: 0;
-            width: 100%;
-            z-index: 1000;
-            background: rgba(15, 23, 42, 0.95);
-            -webkit-backdrop-filter: blur(20px);
-            backdrop-filter: blur(20px);
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-            transition: all 0.3s ease;
-        }
-
-        .nav-container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 1rem 2rem;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .logo {
-            font-size: 1.5rem;
-            font-weight: 800;
-            color: white;
-            text-decoration: none;
-            background: linear-gradient(135deg, var(--primary), var(--secondary));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-        }
-
-        .nav-menu {
-            display: flex;
-            list-style: none;
-            gap: 2rem;
-        }
-
-        .nav-menu a {
-            color: rgba(255, 255, 255, 0.8);
-            text-decoration: none;
-            font-weight: 500;
-            transition: all 0.3s ease;
-            position: relative;
-        }
-
-        .nav-menu a:hover {
-            color: white;
-            transform: translateY(-2px);
-        }
-
-        .nav-menu a.active {
-            color: white;
-            font-weight: 600;
-        }
-
-        .nav-menu a.active::after {
-            content: '';
-            position: absolute;
-            bottom: -5px;
-            left: 0;
-            width: 100%;
-            height: 2px;
-            background: var(--primary);
-        }
-
-        /* Hero Section */
-        .hero {
-            padding: 8rem 0 4rem;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            text-align: center;
-            color: white;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .hero::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 1000"><defs><radialGradient id="a" cx="50%" cy="50%" r="50%"><stop offset="0%" stop-color="%23ffffff" stop-opacity="0.1"/><stop offset="100%" stop-color="%23ffffff" stop-opacity="0"/></radialGradient></defs><circle cx="200" cy="200" r="100" fill="url(%23a)"/><circle cx="800" cy="300" r="150" fill="url(%23a)"/><circle cx="400" cy="700" r="120" fill="url(%23a)"/></svg>');
-            animation: float 20s ease-in-out infinite;
-        }
-
-        @keyframes float {
-            0%, 100% { transform: translateY(0px) rotate(0deg); }
-            50% { transform: translateY(-20px) rotate(5deg); }
-        }
-
-        .hero-container {
-            max-width: 800px;
-            margin: 0 auto;
-            padding: 0 2rem;
-        }
-
-        .hero h1 {
-            font-size: 3rem;
-            font-weight: 800;
-            margin-bottom: 1rem;
-            background: linear-gradient(135deg, white, rgba(255, 255, 255, 0.8));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-        }
-
-        .hero p {
-            font-size: 1.25rem;
-            color: rgba(255, 255, 255, 0.9);
-            margin-bottom: 2rem;
-        }
-
-        .btn {
-            padding: 1rem 2rem;
-            border: none;
-            border-radius: 50px;
-            font-weight: 600;
-            font-size: 1rem;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            text-decoration: none;
-            display: inline-flex;
-            align-items: center;
-            gap: 0.5rem;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .btn-primary {
-            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
-            color: white;
-            box-shadow: 0 10px 25px rgba(99, 102, 241, 0.3);
-        }
-
-        .btn-primary:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 15px 35px rgba(99, 102, 241, 0.4);
-        }
-
-        .btn-secondary {
-            background: rgba(255, 255, 255, 0.1);
-            color: white;
-            border: 2px solid rgba(255, 255, 255, 0.3);
-            -webkit-backdrop-filter: blur(20px);
-            backdrop-filter: blur(20px);
-        }
-
-        .btn-secondary:hover {
-            background: rgba(255, 255, 255, 0.2);
-            transform: translateY(-3px);
-        }
-
-        /* Pricing Section */
-        .pricing {
-            padding: 6rem 0;
-            background: var(--gray-50);
-        }
-
-        .section-header {
-            text-align: center;
-            max-width: 800px;
-            margin: 0 auto 4rem;
-        }
-
-        .section-title {
-            font-size: 2.5rem;
-            font-weight: 800;
-            margin-bottom: 1rem;
-            background: linear-gradient(135deg, var(--dark), var(--gray-800));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-        }
-
-        .section-subtitle {
-            font-size: 1.25rem;
-            color: var(--gray-800);
-            opacity: 0.8;
-        }
-
-        .pricing-grid {
-            max-width: 1200px;
-            margin: 0 auto;
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 2rem;
-            padding: 0 2rem;
-        }
-
-        .pricing-card {
-            background: white;
-            padding: 2rem;
-            border-radius: 20px;
-            transition: all 0.4s ease;
-            border: 1px solid rgba(99, 102, 241, 0.1);
-            position: relative;
-            overflow: hidden;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
-
-        .pricing-card::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
-            transition: left 0.5s ease;
-        }
-
-        .pricing-card:hover::before {
-            left: 100%;
-        }
-
-        .pricing-card:hover {
-            transform: translateY(-10px);
-            box-shadow: 0 25px 50px rgba(99, 102, 241, 0.15);
-            border-color: var(--primary);
-        }
-
-        .pricing-card.popular::after {
-            content: 'Most Popular';
-            position: absolute;
-            top: -15px;
-            right: 15px;
-            background: var(--success);
-            color: white;
-            padding: 5px 10px;
-            border-radius: 12px;
-            font-size: 0.9rem;
-            font-weight: 600;
-        }
-
-        .pricing-card h3 {
-            font-size: 1.5rem;
-            font-weight: 700;
-            margin-bottom: 0.5rem;
-            color: var(--dark);
-        }
-
-        .pricing-card .price {
-            font-size: 2rem;
-            font-weight: 800;
-            color: var(--primary);
-            margin-bottom: 1rem;
-        }
-
-        .pricing-card p {
-            color: var(--gray-800);
-            opacity: 0.8;
-            margin-bottom: 1.5rem;
-            text-align: center;
-        }
-
-        .pricing-card ul {
-            list-style: none;
-            margin-bottom: 2rem;
-            text-align: left;
-        }
-
-        .pricing-card li {
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            color: var(--gray-800);
-            margin-bottom: 0.5rem;
-        }
-
-        .pricing-card i {
-            color: var(--success);
-        }
-
-        /* Hardware Section */
-        .hardware {
-            padding: 6rem 0;
-            background: var(--gray-100);
-        }
-
-        .hardware-grid {
-            max-width: 1200px;
-            margin: 0 auto;
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 2rem;
-            padding: 0 2rem;
-        }
-
-        /* FAQ Section */
-        .faq {
-            padding: 6rem 0;
-            background: var(--gray-50);
-        }
-
-        .faq-container {
-            max-width: 800px;
-            margin: 0 auto;
-            padding: 0 2rem;
-        }
-
-        .faq-item {
-            background: white;
-            border-radius: 10px;
-            margin-bottom: 1rem;
-            overflow: hidden;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
-        }
-
-        .faq-item input[type="checkbox"] {
-            display: none;
-        }
-
-        .faq-item label {
-            display: block;
-            padding: 1rem;
-            font-weight: 600;
-            color: var(--dark);
-            cursor: pointer;
-            position: relative;
-            transition: all 0.3s ease;
-        }
-
-        .faq-item label::after {
-            content: '\f078';
-            font-family: 'Font Awesome 6 Free';
-            font-weight: 900;
-            position: absolute;
-            right: 1rem;
-            top: 50%;
-            transform: translateY(-50%);
-            transition: transform 0.3s ease;
-        }
-
-        .faq-item input:checked + label::after {
-            transform: translateY(-50%) rotate(180deg);
-        }
-
-        .faq-content {
-            max-height: 0;
-            overflow: hidden;
-            padding: 0 1rem;
-            transition: max-height 0.3s ease, padding 0.3s ease;
-        }
-
-        .faq-item input:checked ~ .faq-content {
-            max-height: 200px;
-            padding: 1rem;
-        }
-
-        .faq-content p {
-            color: var(--gray-800);
-            opacity: 0.8;
-        }
-
-        /* CTA Section */
-        .cta {
-            padding: 6rem 0;
-            background: linear-gradient(135deg, var(--primary), var(--secondary));
-            text-align: center;
-            color: white;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .cta::before {
-            content: '';
-            position: absolute;
-            top: -50%;
-            left: -50%;
-            width: 200%;
-            height: 200%;
-            background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
-            animation: rotate 20s linear infinite;
-        }
-
-        @keyframes rotate {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-
-        .cta-container {
-            max-width: 800px;
-            margin: 0 auto;
-            padding: 0 2rem;
-            position: relative;
-            z-index: 2;
-        }
-
-        .cta h2 {
-            font-size: 2.5rem;
-            font-weight: 800;
-            margin-bottom: 1rem;
-        }
-
-        .cta p {
-            font-size: 1.25rem;
-            margin-bottom: 2rem;
-            opacity: 0.9;
-        }
-
-        /* Footer */
-        .footer {
-            background: var(--dark);
-            color: white;
-            padding: 3rem 0 1rem;
-            text-align: center;
-        }
-
-        .footer-container {
-            max-width: 800px;
-            margin: 0 auto;
-            padding: 0 2rem;
-        }
-
-        .footer-links {
-            display: flex;
-            justify-content: center;
-            gap: 2rem;
-            margin-bottom: 2rem;
-        }
-
-        .footer-links a {
-            color: rgba(255, 255, 255, 0.7);
-            text-decoration: none;
-            transition: all 0.3s ease;
-        }
-
-        .footer-links a:hover {
-            color: var(--primary);
-            transform: translateY(-2px);
-        }
-
-        .social-links {
-            display: flex;
-            justify-content: center;
-            gap: 1rem;
-            margin-bottom: 2rem;
-        }
-
-        .social-links a {
-            width: 50px;
-            height: 50px;
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            text-decoration: none;
-            transition: all 0.3s ease;
-        }
-
-        .social-links a:hover {
-            background: var(--primary);
-            transform: translateY(-3px);
-        }
-
-        /* Animations */
-        @keyframes slideInUp {
-            from {
-                opacity: 0;
-                transform: translateY(50px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        /* Mobile Responsiveness */
-        @media (max-width: 768px) {
-            .nav-menu {
-                display: none;
-            }
-
-            .hero h1 {
-                font-size: 2rem;
-            }
-
-            .section-title {
-                font-size: 2rem;
-            }
-
-            .pricing-grid, .hardware-grid {
-                grid-template-columns: 1fr;
-            }
-
-            .cta h2 {
-                font-size: 2rem;
-            }
-        }
-
-        /* Smooth scrolling */
-        html {
-            scroll-behavior: smooth;
-        }
-    </style>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='0.9em' font-size='90'>🚗📍</text></svg>">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="css/styles.css">
 </head>
 <body>
+    <div class="loading" id="loading">
+        <div class="spinner"></div>
+    </div>
 
-    <nav class="navbar" id="navbar">
-        <div class="nav-container">
-            <a href="/" class="logo">🚗 TrackPro</a>
-            <ul class="nav-menu">
-                <li><a href="/#home">Home</a></li>
-                <li><a href="trackPro-features.html">Features</a></li>
-                <li><a href="trackPro-how-it-works.html">How It Works</a></li>
-                <li><a href="trackPro-device-docs.html">Device Docs</a></li>
-                <li><a href="trackPro-integration-and-docs.html">Integration & Docs</a></li>
-                <li><a href="trackPro-pricing.html">Pricing</a></li>
-                <li><a href="/#contact">Contact</a></li>
+    <header role="banner" id="header">
+      <nav class="navbar navbar-expand-lg navbar-dark fixed-top" id="navbar">
+        <div class="container nav-container">
+          <a class="navbar-brand logo" href="/">🚗📍 TrackPro</a>
+          <button class="navbar-toggler d-lg-none" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+          </button>
+          <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav ms-auto nav-menu">
+              <li class="nav-item"><a class="nav-link" href="/#home">Home</a></li>
+              <li class="nav-item"><a class="nav-link" href="trackPro-features.html">Features</a></li>
+              <li class="nav-item"><a class="nav-link" href="trackPro-how-it-works.html">How It Works</a></li>
+              <li class="nav-item"><a class="nav-link" href="trackPro-device-docs.html">Device Docs</a></li>
+              <li class="nav-item"><a class="nav-link" href="trackPro-integration-and-docs.html">Integration & Docs</a></li>
+              <li class="nav-item"><a class="nav-link" href="trackPro-pricing.html">Pricing</a></li>
+              <li class="nav-item"><a class="nav-link" href="/#contact">Contact</a></li>
+              <li class="nav-item"><a class="nav-link" href="#" id="toggleThemeBtn"><i class="fas fa-moon"></i> Dark Mode</a></li>
             </ul>
+          </div>
         </div>
-    </nav>
+      </nav>
+    </header>
 
     <section class="hero" id="hero">
-        <div class="hero-container">
+        <div class="hero-container container text-center">
             <h1>Flexible Pricing for Every Fleet</h1>
             <p>Choose a TrackPro plan to track vehicles and assets with ease, starting at $0/month.</p>
-            <div class="hero-buttons">
-                <a href="#pricing" class="btn btn-primary">
-                    <i class="fas fa-chart-line"></i>
-                    View Plans
-                </a>
-                <a href="https://trackpro.arybit.co.ke/demo" class="btn btn-secondary">
-                    <i class="fas fa-phone"></i>
-                    Try Demo
-                </a>
+            <div class="hero-buttons d-flex justify-content-center gap-3">
+                <a href="#pricing" class="btn btn-primary"><i class="fas fa-chart-line"></i> View Plans</a>
+                <a href="https://trackpro.arybit.co.ke/demo" class="btn btn-secondary"><i class="fas fa-phone"></i> Try Demo</a>
             </div>
         </div>
     </section>
 
     <section class="pricing" id="pricing">
-        <div class="section-header">
+        <div class="section-header text-center">
             <h2 class="section-title">Our Pricing Plans</h2>
             <p class="section-subtitle">Select from Basic, Pro, or Enterprise plans to suit your tracking needs.</p>
         </div>
 
-        <div class="pricing-grid">
-            <div class="pricing-card">
-                <h3>Basic Plan</h3>
-                <p class="price">$7.99 / vehicle / month</p>
-                <p>Perfect for small businesses or individuals starting with GPS tracking.</p>
-                <ul>
-                    <li><i class="fas fa-check"></i> Track up to 5 vehicles</li>
-                    <li><i class="fas fa-check"></i> Real-time tracking (30-sec updates)</li>
-                    <li><i class="fas fa-check"></i> Basic dashboard & reports</li>
-                    <li><i class="fas fa-check"></i> Email support</li>
-                </ul>
-                <a href="sign-up.html" class="btn btn-primary">Get Started</a>
-            </div>
-
-            <div class="pricing-card popular">
-                <h3>Pro Plan</h3>
-                <p class="price">$14.99 / vehicle / month</p>
-                <p>Ideal for growing businesses with multiple vehicles or assets.</p>
-                <ul>
-                    <li><i class="fas fa-check"></i> Track up to 50 vehicles</li>
-                    <li><i class="fas fa-check"></i> Real-time tracking (15-sec updates)</li>
-                    <li><i class="fas fa-check"></i> Geofencing & SMS/email alerts</li>
-                    <li><i class="fas fa-check"></i> Trip history (6 months)</li>
-                    <li><i class="fas fa-check"></i> Mobile app access</li>
-                    <li><i class="fas fa-check"></i> Priority support</li>
-                </ul>
-                <a href="trackPro-pro-plan-custom-pricing.html" class="btn btn-primary">Choose Pro</a>
-            </div>
-
-            <div class="pricing-card">
-                <h3>Enterprise Plan</h3>
-                <p class="price">$29.99 / vehicle / month</p>
-                <p>Designed for large fleets and developers needing advanced features.</p>
-                <ul>
-                    <li><i class="fas fa-check"></i> Unlimited vehicles</li>
-                    <li><i class="fas fa-check"></i> Real-time tracking (10-sec updates)</li>
-                    <li><i class="fas fa-check"></i> Advanced analytics & reports</li>
-                    <li><i class="fas fa-check"></i> API access & webhooks</li>
-                    <li><i class="fas fa-check"></i> White-label option</li>
-                    <li><i class="fas fa-check"></i> 24/7 dedicated support</li>
-                </ul>
-                <a href="contact-sales.html" class="btn btn-primary">Contact Sales</a>
+        <div class="pricing-grid container">
+            <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+                <div class="col">
+                    <div class="pricing-card">
+                        <h3>Basic Plan</h3>
+                        <p class="price">$7.99 / vehicle / month</p>
+                        <p>Perfect for small businesses or individuals starting with GPS tracking.</p>
+                        <ul class="list-unstyled">
+                            <li><i class="fas fa-check text-success"></i> Track up to 5 vehicles</li>
+                            <li><i class="fas fa-check text-success"></i> Real-time tracking (30-sec updates)</li>
+                            <li><i class="fas fa-check text-success"></i> Basic dashboard & reports</li>
+                            <li><i class="fas fa-check text-success"></i> Email support</li>
+                        </ul>
+                        <a href="sign-up.html" class="btn btn-primary">Get Started</a>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="pricing-card popular">
+                        <h3>Pro Plan</h3>
+                        <p class="price">$14.99 / vehicle / month</p>
+                        <p>Ideal for growing businesses with multiple vehicles or assets.</p>
+                        <ul class="list-unstyled">
+                            <li><i class="fas fa-check text-success"></i> Track up to 50 vehicles</li>
+                            <li><i class="fas fa-check text-success"></i> Real-time tracking (15-sec updates)</li>
+                            <li><i class="fas fa-check text-success"></i> Geofencing & SMS/email alerts</li>
+                            <li><i class="fas fa-check text-success"></i> Trip history (6 months)</li>
+                            <li><i class="fas fa-check text-success"></i> Mobile app access</li>
+                            <li><i class="fas fa-check text-success"></i> Priority support</li>
+                        </ul>
+                        <a href="trackPro-pro-plan-custom-pricing.html" class="btn btn-primary">Choose Pro</a>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="pricing-card">
+                        <h3>Enterprise Plan</h3>
+                        <p class="price">$29.99 / vehicle / month</p>
+                        <p>Designed for large fleets and developers needing advanced features.</p>
+                        <ul class="list-unstyled">
+                            <li><i class="fas fa-check text-success"></i> Unlimited vehicles</li>
+                            <li><i class="fas fa-check text-success"></i> Real-time tracking (10-sec updates)</li>
+                            <li><i class="fas fa-check text-success"></i> Advanced analytics & reports</li>
+                            <li><i class="fas fa-check text-success"></i> API access & webhooks</li>
+                            <li><i class="fas fa-check text-success"></i> White-label option</li>
+                            <li><i class="fas fa-check text-success"></i> 24/7 dedicated support</li>
+                        </ul>
+                        <a href="contact-sales.html" class="btn btn-primary">Contact Sales</a>
+                    </div>
+                </div>
             </div>
         </div>
     </section>
 
     <section class="hardware" id="hardware">
-        <div class="section-header">
+        <div class="section-header text-center">
             <h2 class="section-title">Hardware & Add-Ons</h2>
             <p class="section-subtitle">Enhance your tracking with GPS devices and premium services.</p>
         </div>
 
-        <div class="hardware-grid">
-            <div class="pricing-card">
-                <h3>GPS Devices</h3>
-                <p>Purchase or lease devices like Teltonika FMB920 ($45), Queclink GV20 ($30), or others for seamless integration.</p>
-                <a href="trackPro-device-pricing.html" class="btn btn-primary">View Devices</a>
-            </div>
-
-            <div class="pricing-card">
-                <h3>Premium Services</h3>
-                <p>Unlock advanced analytics ($5–$10/month), professional installation ($50–$100/device), or white-label solutions.</p>
-                <a href="trackPro-premium-services.html" class="btn btn-primary">Explore Services</a>
+        <div class="hardware-grid container">
+            <div class="row row-cols-1 row-cols-md-2 g-4">
+                <div class="col">
+                    <div class="pricing-card">
+                        <h3>GPS Devices</h3>
+                        <p>Purchase or lease devices like Teltonika FMB920 ($45), Queclink GV20 ($30), or others for seamless integration.</p>
+                        <a href="trackPro-device-pricing.html" class="btn btn-primary">View Devices</a>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="pricing-card">
+                        <h3>Premium Services</h3>
+                        <p>Unlock advanced analytics ($5–$10/month), professional installation ($50–$100/device), or white-label solutions.</p>
+                        <a href="trackPro-premium-services.html" class="btn btn-primary">Explore Services</a>
+                    </div>
+                </div>
             </div>
         </div>
     </section>
 
     <section class="faq" id="faq">
-        <div class="section-header">
+        <div class="section-header text-center">
             <h2 class="section-title">Frequently Asked Questions</h2>
             <p class="section-subtitle">Answers to common questions about TrackPro’s pricing and services.</p>
         </div>
 
-        <div class="faq-container">
-            <div class="faq-item">
-                <input type="checkbox" id="faq1">
-                <label for="faq1">Is the Basic Plan really $7.99 per vehicle per month?</label>
-                <div class="faq-content">
-                    <p>Yes, the Basic Plan is $7.99 per vehicle per month with no hidden costs, allowing you to track up to 5 vehicles with essential features.</p>
+        <div class="faq-container container">
+            <div class="accordion" id="faqAccordion">
+                <div class="faq-item accordion-item">
+                    <h3 class="accordion-header">
+                        <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#faq1" aria-expanded="true" aria-controls="faq1">
+                            Is the Basic Plan really $7.99 per vehicle per month?
+                        </button>
+                    </h3>
+                    <div id="faq1" class="accordion-collapse collapse show" data-bs-parent="#faqAccordion">
+                        <div class="accordion-body">
+                            Yes, the Basic Plan is $7.99 per vehicle per month with no hidden costs, allowing you to track up to 5 vehicles with essential features.
+                        </div>
+                    </div>
                 </div>
-            </div>
-
-            <div class="faq-item">
-                <input type="checkbox" id="faq2">
-                <label for="faq2">Do I need to purchase hardware?</label>
-                <div class="faq-content">
-                    <p>You can use existing compatible devices or purchase/lease hardware from TrackPro, starting at $20. See <a href="trackPro-device-pricing.html">device pricing</a> for details.</p>
+                <div class="faq-item accordion-item">
+                    <h3 class="accordion-header">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq2" aria-expanded="false" aria-controls="faq2">
+                            Do I need to purchase hardware?
+                        </button>
+                    </h3>
+                    <div id="faq2" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                        <div class="accordion-body">
+                            You can use existing compatible devices or purchase/lease hardware from TrackPro, starting at $20. See <a href="trackPro-device-pricing.html">device pricing</a> for details.
+                        </div>
+                    </div>
                 </div>
-            </div>
-
-            <div class="faq-item">
-                <input type="checkbox" id="faq3">
-                <label for="faq3">Can I upgrade or downgrade plans?</label>
-                <div class="faq-content">
-                    <p>Yes, switch plans anytime to match your needs. Contact <a href="mailto:support@trackpro.arybit.co.ke">support@trackpro.arybit.co.ke</a> for assistance.</p>
+                <div class="faq-item accordion-item">
+                    <h3 class="accordion-header">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq3" aria-expanded="false" aria-controls="faq3">
+                            Can I upgrade or downgrade plans?
+                        </button>
+                    </h3>
+                    <div id="faq3" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                        <div class="accordion-body">
+                            Yes, switch plans anytime to match your needs. Contact <a href="mailto:support@trackpro.arybit.co.ke">support@trackpro.arybit.co.ke</a> for assistance.
+                        </div>
+                    </div>
                 </div>
-            </div>
-
-            <div class="faq-item">
-                <input type="checkbox" id="faq4">
-                <label for="faq4">What devices are compatible with TrackPro?</label>
-                <div class="faq-content">
-                    <p>TrackPro supports devices like Teltonika FMB920, Queclink GV20, Concox GT06N, and more. Check <a href="trackPro-device-docs.html">device docs</a> for setup guides.</p>
+                <div class="faq-item accordion-item">
+                    <h3 class="accordion-header">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq4" aria-expanded="false" aria-controls="faq4">
+                            What devices are compatible with TrackPro?
+                        </button>
+                    </h3>
+                    <div id="faq4" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                        <div class="accordion-body">
+                            TrackPro supports devices like Teltonika FMB920, Queclink GV20, Concox GT06N, and more. Check <a href="trackPro-device-docs.html">device docs</a> for setup guides.
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
     </section>
 
     <section class="cta">
-        <div class="cta-container">
+        <div class="cta-container container text-center">
             <h2>Start Tracking Today</h2>
             <p>Choose a plan and monitor your fleet in minutes – no setup fees.</p>
-            <div class="hero-buttons">
-                <a href="sign-up.html" class="btn btn-primary">
-                    <i class="fas fa-rocket"></i>
-                    Get Started
-                </a>
-                <a href="contact-sales.html" class="btn btn-secondary">
-                    <i class="fas fa-phone"></i>
-                    Contact Sales
-                </a>
+            <div class="hero-buttons d-flex justify-content-center gap-3">
+                <a href="sign-up.html" class="btn btn-primary"><i class="fas fa-rocket"></i> Get Started</a>
+                <a href="contact-sales.html" class="btn btn-secondary"><i class="fas fa-phone"></i> Contact Sales</a>
             </div>
         </div>
     </section>
 
     <footer class="footer" id="contact">
-        <div class="footer-container">
-            <div class="footer-links">
+        <div class="footer-container container text-center">
+            <div class="footer-links d-flex justify-content-center gap-3 mb-3">
                 <a href="mailto:support@trackpro.arybit.co.ke">support@trackpro.arybit.co.ke</a>
                 <span>|</span>
                 <a href="tel:+254720989818">+254 720 989 818</a>
             </div>
-
-            <div class="social-links">
+            <div class="social-links d-flex justify-content-center gap-3 mb-3">
                 <a href="https://twitter.com/trackpro_arybit" aria-label="Twitter">
                     <i class="fab fa-x-twitter"></i>
                 </a>
@@ -774,36 +276,15 @@
                     <i class="fab fa-linkedin"></i>
                 </a>
             </div>
-
             <p>© 2025 TrackPro by Arybit Technologies. Built with ❤️ in Kenya.</p>
         </div>
     </footer>
 
+    <!-- Bootstrap 5.3.3 JS Bundle -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+    <!-- Custom JS -->
+    <script src="js/index.js"></script>
     <script>
-        // Navbar scroll effect
-        window.addEventListener('scroll', function() {
-            const navbar = document.getElementById('navbar');
-            if (window.scrollY > 100) {
-                navbar.style.background = 'rgba(15, 23, 42, 0.98)';
-            } else {
-                navbar.style.background = 'rgba(15, 23, 42, 0.95)';
-            }
-        });
-
-        // Smooth scrolling for navigation links
-        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-            anchor.addEventListener('click', function (e) {
-                e.preventDefault();
-                const target = document.querySelector(this.getAttribute('href'));
-                if (target) {
-                    target.scrollIntoView({
-                        behavior: 'smooth',
-                        block: 'start'
-                    });
-                }
-            });
-        });
-
         // Intersection Observer for animations
         const observerOptions = {
             threshold: 0.1,
@@ -825,17 +306,6 @@
             item.style.transform = 'translateY(30px)';
             item.style.transition = 'all 0.6s ease';
             observer.observe(item);
-        });
-
-        // Enhanced hover effects
-        document.querySelectorAll('.pricing-card').forEach(item => {
-            item.addEventListener('mouseenter', function() {
-                this.style.transform = 'translateY(-15px) scale(1.02)';
-            });
-            
-            item.addEventListener('mouseleave', function() {
-                this.style.transform = 'translateY(0) scale(1)';
-            });
         });
     </script>
 </body>
