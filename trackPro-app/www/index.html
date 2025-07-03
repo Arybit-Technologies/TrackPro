@@ -209,43 +209,59 @@
                 <div class="text-center mt-4">
                     <small class="text-muted">Vehicle locations updated every 5–15 seconds via WebSockets.</small>
                 </div>
-                <!-- Tracking Widget Card -->
-                <div class="tracking-widget-card" id="trackingWidgetCard">
+                <!-- Vehicle Selector Tracking Widget Card -->
+                 <div class="d-none">
+                 <div class="tracking-widget-card" id="trackingWidgetCard">
                     <button class="tracking-widget-close" onclick="document.getElementById('trackingWidgetCard').style.display='none'" aria-label="Close widget">×</button>
                     <!-- Logo and Title Row -->
-                    <div class="d-flex align-items-center gap-2 mb-2">
-                        <img src="icons/icon-32x32.png" alt="TrackPro Logo" style="width:32px;height:32px;border-radius:8px;background:#32062e;box-shadow:0 2px 8px rgba(50,6,46,0.12);">
-                        <span class="fw-bold" style="font-size:1.1rem;letter-spacing:0.5px;">Live Tracking</span>
-                    </div>
-                    <!-- Vehicle Selector -->
-                    <div class="input-group mb-3 flex-nowrap" style="gap: 0.5rem;">
+                    <div class="d-flex align-items-center gap-2">
+                        <img src="icons/icon-32x32.png" alt="TrackPro Logo" class="tracking-widget-img" style="width:32px;height:32px;border-radius:8px;background:#32062e;box-shadow:0 2px 8px rgba(50,6,46,0.12);">
                         <select class="form-select" id="vehicle-select" aria-label="Select vehicle" style="max-width: 180px;">
                             <option selected>Select Vehicle</option>
                             <option value="vehicle1">Vehicle 1</option>
                             <option value="vehicle2">Vehicle 2</option>
                         </select>
-                        <button class="btn btn-primary" onclick="refreshMap()" aria-label="Refresh map" style="white-space: nowrap; min-width: 90px;">
-                            Refresh
-                        </button>
                     </div>
-                    <!-- Status Badges and Google Maps Link -->
-                    <div class="card-body py-3 px-2 d-flex flex-column flex-md-row align-items-md-center justify-content-between gap-3">
-                        <div class="d-flex flex-wrap gap-2 align-items-center mb-2 mb-md-0">
-                            <span class="badge bg-primary bg-gradient">
-                                <i class="fas fa-map-marker-alt" aria-hidden="true"></i>
-                                <span id="lat">N/A</span>, <span id="lng">N/A</span>
-                            </span>
-                            <span class="badge bg-secondary">
-                                <i class="fas fa-bullseye" aria-hidden="true"></i>
-                                <span id="accuracy">N/A</span>
-                            </span>
-                            <span class="badge" id="vehicle-status">Active</span>
-                            <span class="badge" id="geofence-status">Inactive</span>
+                  </div>
+                 </div>
+                <!-- Tracking Feature Cards Scrollable Section (list all vehicles) -->
+                <div class="tracking-feature-scroll" style="position:absolute; bottom:0; left:0; width:100vw; max-width:100vw; z-index:10; background:linear-gradient(0deg,rgba(32,32,32,0.96) 80%,rgba(32,32,32,0.7) 100%,transparent 100%); padding:18px 10px 90px 10px; box-sizing:border-box; overflow-x:auto; overflow-y:auto; display:flex; flex-direction:row; gap:16px;">
+                    <!-- Example: Repeat this .feature-card for each vehicle in your fleet -->
+                    <div class="feature-card" role="listitem">
+                        <div class="feature-header d-flex align-items-center gap-3 mb-2">
+                            <div class="feature-icon" aria-hidden="true">🚗</div>
+                            <div class="feature-title">Vehicle 1</div>
                         </div>
-                        <a id="view-map-link" href="#" target="_blank" class="btn btn-sm btn-outline-light d-flex align-items-center gap-2" aria-label="Open in Google Maps">
-                            <i class="fas fa-external-link-alt" aria-hidden="true"></i> Google Maps
-                        </a>
+                        <div class="feature-desc mb-2">Toyota Prado - KDA 123A</div>
+                        <span class="badge bg-primary bg-gradient">
+                            <i class="fas fa-map-marker-alt" aria-hidden="true"></i>
+                            <span class="lat">-1.286389</span>, <span class="lng">36.817223</span>
+                        </span>
+                        <span class="badge bg-secondary">
+                            <i class="fas fa-bullseye" aria-hidden="true"></i>
+                            <span class="accuracy">±5m</span>
+                        </span>
+                        <span class="badge" style="background:#28a7451a;color:#28a745;">Active</span>
+                        <span class="badge" style="background:#dc35451a;color:#dc3545;">Geofence: Out</span>
                     </div>
+                    <div class="feature-card" role="listitem">
+                        <div class="feature-header d-flex align-items-center gap-3 mb-2">
+                            <div class="feature-icon" aria-hidden="true">🚚</div>
+                            <div class="feature-title">Vehicle 2</div>
+                        </div>
+                        <div class="feature-desc mb-2">Isuzu NQR - KDB 456B</div>
+                        <span class="badge bg-primary bg-gradient">
+                            <i class="fas fa-map-marker-alt" aria-hidden="true"></i>
+                            <span class="lat">-1.287000</span>, <span class="lng">36.818000</span>
+                        </span>
+                        <span class="badge bg-secondary">
+                            <i class="fas fa-bullseye" aria-hidden="true"></i>
+                            <span class="accuracy">±7m</span>
+                        </span>
+                        <span class="badge" style="background:#28a7451a;color:#28a745;">Active</span>
+                        <span class="badge" style="background:#28a7451a;color:#28a745;">Geofence: In</span>
+                    </div>
+                    <!-- Repeat for each vehicle -->
                 </div>
             </div>
         </div>
@@ -650,7 +666,7 @@
                 <div class="nav-icon" aria-hidden="true">🏠</div>
                 <div class="nav-label">Home</div>
             </div>
-            <div class="nav-item text-center" role="button" tabindex="0" onclick="showScreen('tracking')" aria-label="Tracking">
+            <div class="nav-item text-center d-none" role="button" tabindex="0" onclick="showScreen('tracking')" aria-label="Tracking">
                 <div class="nav-icon" aria-hidden="true">📍</div>
                 <div class="nav-label">Tracking</div>
             </div>
@@ -672,6 +688,11 @@
             </div>
         </nav>
     </div>
+
+    <!-- SOS Button with TrackPro Logo -->
+    <button class="sos-button" id="sos-tracking-button" aria-label="SOS">
+        <img src="icons/icon-32x32.png" alt="TrackPro Logo" class="tracking-widget-img" style="width:38px;height:38px;border-radius:8px;background:#32062e;box-shadow:0 2px 8px rgba(50,6,46,0.12);">
+    </button>
 
     <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>

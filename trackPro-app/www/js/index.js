@@ -37,6 +37,12 @@ class TrackProApp {
   #defaultLocation = { latitude: -1.286389, longitude: 36.817223 }; // Nairobi
   #watchId = null;
   #isCordova = typeof cordova !== 'undefined';
+  #geofenceMap = null;
+  #geofenceOverlays = [];
+  #aiRouteMap = null;
+  #fleetMarkers = [];
+  #sosMapTries = 0;
+  #historyMap = null;
 
   /**
    * Private constructor to enforce singleton pattern.
@@ -71,9 +77,11 @@ class TrackProApp {
     this.initWebSocket();
     this.setupDarkModeToggle();
     this.setupNavigationListeners();
+    this.setupQuickActionCards();
+    this.setupSosButton();
+    // this.initializeLoggingPanel(); // Uncomment if logging panel is needed
     this.showScreen('home');
-    setupQuickActionCards();
-    //this.initializeLoggingPanel();
+    //alert('TrackProApp initialized successfully!');
   }
 
   /**
@@ -185,18 +193,70 @@ class TrackProApp {
       const navBtn = document.querySelector(`.nav-item[onclick="showScreen('${screenId}')"]`);
       if (navBtn) navBtn.classList.add('active');
 
-      // Use the new toggleHeader function
-      toggleHeader(screenId);
+      this.toggleHeader(screenId);
 
       if (screenId === 'tracking') this.initMap();
       if (screenId === 'geofencing') this.initGeofenceMap();
       if (screenId === 'ai-route-optimization') this.initAiRouteOptimizationMap();
+      if (screenId === 'history') setTimeout(() => this.renderTripHistoriesOnHistoryMap(), 400);
       this.updateTime();
       this.updateConnectionStatus();
     } catch (error) {
       console.error('Error switching screen:', error);
       this.showError(`Failed to load screen "${screenId}". Please try again. ${error.message}`);
     }
+  }
+
+  /**
+   * Toggle the header based on the current screen.
+   * @param {string} screenId - The ID of the screen being displayed.
+   */
+  toggleHeader(screenId) {
+    const mainHeader = document.getElementById('header');
+    const screenHeader = document.getElementById('screen-header');
+    const navbar = document.getElementById('navbar');
+    const screen = document.getElementById(screenId);
+
+    if (!screen) return;
+
+    document.querySelectorAll('.screen .header').forEach(h => h.style.display = 'none');
+
+    if (screenId === 'home') {
+      if (mainHeader) mainHeader.style.display = '';
+      if (navbar) navbar.style.display = '';
+      if (screenHeader) {
+        screenHeader.style.display = 'none';
+        screenHeader.innerHTML = '';
+        screenHeader.style.opacity = 0;
+      }
+    } else {
+      if (mainHeader) mainHeader.style.display = 'none';
+      if (navbar) navbar.style.display = 'none';
+
+      if (screenHeader) {
+        const screenHeaderDiv = screen.querySelector('.header');
+        if (screenHeaderDiv) {
+          screenHeader.innerHTML = screenHeaderDiv.innerHTML;
+          screenHeader.style.display = '';
+          screenHeader.style.opacity = 1;
+        } else {
+          screenHeader.style.display = 'none';
+          screenHeader.innerHTML = '';
+          screenHeader.style.opacity = 0;
+        }
+      }
+    }
+
+    document.querySelectorAll('button.back-btn[data-btn="home"]').forEach((btn) => {
+      btn.addEventListener('click', () => this.showScreen('home'));
+      btn.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          this.showScreen('home');
+        }
+      });
+      btn.setAttribute('tabindex', '0');
+      btn.setAttribute('role', 'button');
+    });
   }
 
   /**
@@ -221,8 +281,7 @@ class TrackProApp {
    * @returns {string} The API key.
    */
   getApiKey() {
-    // TODO: Replace with secure environment variable in production
-    return 'AIzaSyAloYDyJ7kvvz0U8MDDGVnf_4E_SJU8V0c';
+    return 'AIzaSyAloYDyJ7kvvz0U8MDDGVnf_4E_SJU8V0c'; // TODO: Replace with secure environment variable
   }
 
   /**
@@ -260,7 +319,7 @@ class TrackProApp {
       });
       this.updateMapLocation();
       this.setupGeofence();
-      this.watchPosition(); // Start watching position after map initialization
+      this.watchPosition();
     } catch (error) {
       console.error('Map initialization failed:', error);
       this.showStatus('❌ Failed to load map: ' + error.message, 'danger');
@@ -306,7 +365,7 @@ class TrackProApp {
             console.warn('Received unknown or malformed WebSocket message:', data);
           }
         } catch (error) {
-          console.error('Error parsing WebSocket message or processing data:', error, 'Message:', event.data);
+          console.error('Error parsing WebSocket message:', error);
           this.showError('Failed to process data from server.');
         }
       };
@@ -318,7 +377,7 @@ class TrackProApp {
       };
 
       this.#websocket.onclose = (event) => {
-        console.log('WebSocket closed.', event.code, event.reason);
+        console.log('WebSocket closed:', event.code, event.reason);
         this.updateConnectionStatus();
         this.showStatus('Disconnected from tracking server. Reconnecting in 5 seconds...', 'warning');
         setTimeout(() => this.initWebSocket(), 5000);
@@ -336,7 +395,7 @@ class TrackProApp {
   watchPosition() {
     if (!navigator.geolocation) {
       console.warn('Geolocation not supported on this device.');
-      this.showError('Geolocation is not supported on this device. Tracking functionality will be limited.');
+      this.showError('Geolocation is not supported on this device.');
       return;
     }
 
@@ -386,9 +445,8 @@ class TrackProApp {
     const geofenceStatus = statusEl?.textContent || 'Inactive';
     const geofenceColor = statusEl?.style.color || '#28a745';
 
-    const themeColor = '#32062e'; // Use your app's primary color
-    const logoUrl = 'icons/icon-32x32.png'; // Path to your logo image
-
+    const themeColor = '#32062e';
+    const logoUrl = 'icons/icon-32x32.png';
     const infoContent = `
       <div class="d-flex flex-wrap gap-2 align-items-center" style="font-size:0.95em;">
         <img src="${logoUrl}" alt="TrackPro Logo" style="width:24px;height:24px;border-radius:6px;background:${themeColor};margin-right:6px;box-shadow:0 2px 8px rgba(50,6,46,0.12);">
@@ -419,29 +477,27 @@ class TrackProApp {
     const safeZone = this.#safeZone;
 
     if (!location || !map) {
-        console.warn('No location or map for geofence');
-        return;
+      console.warn('No location or map for geofence');
+      return;
     }
     if (!safeZone.center) {
-        safeZone.center = [location.latitude, location.longitude];
+      safeZone.center = [location.latitude, location.longitude];
     }
     const centerLatLng = { lat: safeZone.center[0], lng: safeZone.center[1] };
 
-    // Remove previous geofence if exists
     if (this.#geofence) this.#geofence.setMap(null);
 
-    // Debug log
     console.log('Drawing geofence at:', centerLatLng, 'radius:', safeZone.radius);
 
     this.#geofence = new google.maps.Circle({
-        strokeColor: '#28a745',
-        strokeOpacity: 0.8,
-        strokeWeight: 2,
-        fillColor: '#28a745',
-        fillOpacity: 0.2,
-        map: map,
-        center: centerLatLng,
-        radius: safeZone.radius || 200 // fallback to 200 if undefined
+      strokeColor: '#28a745',
+      strokeOpacity: 0.8,
+      strokeWeight: 2,
+      fillColor: '#28a745',
+      fillOpacity: 0.2,
+      map: map,
+      center: centerLatLng,
+      radius: safeZone.radius || 200,
     });
 
     const statusEl = document.getElementById('geofence-status');
@@ -479,7 +535,7 @@ class TrackProApp {
    * @returns {number} Distance in meters.
    */
   calculateDistance(lat1, lon1, lat2, lon2) {
-    const R = 6371e3; // Earth's radius in meters
+    const R = 6371e3;
     const φ1 = (lat1 * Math.PI) / 180;
     const φ2 = (lat2 * Math.PI) / 180;
     const Δφ = ((lat2 - lat1) * Math.PI) / 180;
@@ -547,13 +603,13 @@ class TrackProApp {
     let message = 'An unknown error occurred while trying to get your location.';
     switch (err.code) {
       case err.PERMISSION_DENIED:
-        message = 'Location access was denied. Please enable location services for this app in your device settings.';
+        message = 'Location access was denied. Please enable location services.';
         break;
       case err.POSITION_UNAVAILABLE:
-        message = 'Your location information is unavailable. Please check your GPS signal.';
+        message = 'Your location information is unavailable.';
         break;
       case err.TIMEOUT:
-        message = 'Could not retrieve location within the allotted time. Please try again.';
+        message = 'Could not retrieve location within the allotted time.';
         break;
     }
     console.error('Geolocation error:', err.code, message, err);
@@ -566,8 +622,7 @@ class TrackProApp {
    */
   showError(message) {
     console.error(message);
-    // TODO: Implement a proper UI notification system (e.g., toast or modal)
-    //alert(`Error: ${message}`);
+    //alert(`Error: ${message}`); // TODO: Replace with UI notification system
   }
 
   /**
@@ -577,7 +632,7 @@ class TrackProApp {
    */
   showStatus(message, type = 'info') {
     console.log(`Status (${type}): ${message}`);
-    // TODO: Implement a proper UI notification system
+    // TODO: Implement UI notification system
   }
 
   /**
@@ -602,7 +657,7 @@ class TrackProApp {
       }
     } else {
       console.warn('WebSocket not open, cannot send location.');
-      this.showStatus('Not connected to tracking server. Location not sent.', 'warning');
+      this.showStatus('Not connected to tracking server.', 'warning');
     }
   }
 
@@ -719,32 +774,38 @@ class TrackProApp {
    * Open the support contact options.
    */
   openSupport() {
-    this.showStatus('Support feature is under development. Please contact support@example.com for assistance.', 'info');
+    this.showStatus('Support feature is under development.', 'info');
   }
 
   /**
    * Open the account settings.
    */
   openAccount() {
-    this.showStatus('Account feature is under development. Please check back later.', 'info');
+    this.showStatus('Account feature is under development.', 'info');
   }
 
   /**
    * Open the app settings.
    */
   openSettings() {
-    this.showStatus('Settings feature is under development. Please check back later.', 'info');
+    this.showStatus('Settings feature is under development.', 'info');
+  }
+
+  /**
+   * Open the alerts screen.
+   */
+  openAlerts() {
+    this.showScreen('alerts');
   }
 
   /**
    * Toggle the app language between English and Swahili.
    */
   toggleLanguage() {
-    const currentLang = document.documentElement.lang;
+    const currentLang = document.documentElement.lang || 'en';
     const newLang = currentLang === 'en' ? 'sw' : 'en';
     document.documentElement.lang = newLang;
 
-    // Update UI text based on the new language
     document.querySelectorAll('[data-i18n]').forEach((el) => {
       const key = el.getAttribute('data-i18n');
       el.textContent = this.getTranslation(key, newLang);
@@ -761,52 +822,21 @@ class TrackProApp {
    */
   getTranslation(key, lang) {
     const translations = {
-      'app.title': {
-        en: 'TrackPro - Real-time Tracking',
-        sw: 'TrackPro - Ufuatiliaji wa Wakati Halisi',
-      },
+      'app.title': { en: 'TrackPro - Real-time Tracking', sw: 'TrackPro - Ufuatiliaji wa Wakati Halisi' },
       'app.description': {
         en: 'Manage your real-time tracking settings and view your location history.',
-        sw: 'S管理您的实时跟踪设置并查看您的位置历史记录。',
+        sw: 'Dhibiti mipangilio yako ya ufuatiliaji wa wakati halisi na uangalie historia yako ya eneo.',
       },
-      'button.start': {
-        en: 'Start Tracking',
-        sw: 'Anza Kufuatilia',
-      },
-      'button.stop': {
-        en: 'Stop Tracking',
-        sw: 'Acha Kufuatilia',
-      },
-      'status.connected': {
-        en: 'Connected to tracking server.',
-        sw: '已连接到跟踪服务器。',
-      },
-      'status.disconnected': {
-        en: 'Disconnected from tracking server.',
-        sw: '与跟踪服务器断开连接。',
-      },
-      'status.error': {
-        en: 'An error occurred. Please try again.',
-        sw: '发生错误。请再试一次。',
-      },
-      'geofence.active': {
-        en: 'Geofence Active',
-        sw: '地理围栏已激活',
-      },
-      'geofence.inactive': {
-        en: 'Geofence Inactive',
-        sw: '地理围栏未激活',
-      },
-      'language.english': {
-        en: 'English',
-        sw: '英语',
-      },
-      'language.swahili': {
-        en: 'Swahili',
-        sw: '斯瓦希里语',
-      },
+      'button.start': { en: 'Start Tracking', sw: 'Anza Kufuatilia' },
+      'button.stop': { en: 'Stop Tracking', sw: 'Acha Kufuatilia' },
+      'status.connected': { en: 'Connected to tracking server.', sw: 'Imeunganishwa kwenye seva ya ufuatiliaji.' },
+      'status.disconnected': { en: 'Disconnected from tracking server.', sw: 'Imekatwa kutoka kwa seva ya ufuatiliaji.' },
+      'status.error': { en: 'An error occurred. Please try again.', sw: 'Hitilafu imetokea. Tafadhali jaribu tena.' },
+      'geofence.active': { en: 'Geofence Active', sw: 'Geofence Imewashwa' },
+      'geofence.inactive': { en: 'Geofence Inactive', sw: 'Geofence Haijawashwa' },
+      'language.english': { en: 'English', sw: 'Kiingereza' },
+      'language.swahili': { en: 'Swahili', sw: 'Kiswahili' },
     };
-
     return translations[key]?.[lang] || key;
   }
 
@@ -814,23 +844,21 @@ class TrackProApp {
    * Start route optimization process.
    */
   startRouteOptimization() {
-    this.showStatus('Route optimization feature is under development. Please check back later.', 'info');
+    this.showStatus('Route optimization feature is under development.', 'info');
   }
 
   /**
    * Initialize the geofencing map and display sample geofence zones.
    */
-  initGeofenceMap() {
+  async initGeofenceMap() {
     const mapEl = document.getElementById('geofence-map');
     if (!mapEl) {
       console.error('Geofence map element #geofence-map not found.');
       return;
     }
 
-    // Only initialize once
-    if (this._geofenceMap) return;
+    if (this.#geofenceMap) return;
 
-    // Sample geofence data: circles and polygons
     const geofences = [
       {
         id: 'zone1',
@@ -838,7 +866,7 @@ class TrackProApp {
         type: 'circle',
         center: { lat: -1.286389, lng: 36.817223 },
         radius: 300,
-        color: '#28a745'
+        color: '#28a745',
       },
       {
         id: 'zone2',
@@ -848,160 +876,391 @@ class TrackProApp {
           { lat: -1.287, lng: 36.816 },
           { lat: -1.288, lng: 36.818 },
           { lat: -1.289, lng: 36.817 },
-          { lat: -1.288, lng: 36.815 }
+          { lat: -1.288, lng: 36.815 },
         ],
-        color: '#ff6b9d'
-      }
+        color: '#ff6b9d',
+      },
     ];
 
-    // Center map on first geofence
-    const center = geofences[0].type === 'circle'
-      ? geofences[0].center
-      : geofences[0].path[0];
+    const center = geofences[0].type === 'circle' ? geofences[0].center : geofences[0].path[0];
 
-    this._geofenceMap = new google.maps.Map(mapEl, {
-      center,
-      zoom: 15,
-      mapTypeId: 'roadmap',
-      disableDefaultUI: true,
-      zoomControl: true,
-    });
-
-    // Draw geofences
-    this._geofenceOverlays = [];
-    geofences.forEach(zone => {
-      if (zone.type === 'circle') {
-        const circle = new google.maps.Circle({
-          strokeColor: zone.color,
-          strokeOpacity: 0.8,
-          strokeWeight: 2,
-          fillColor: zone.color,
-          fillOpacity: 0.18,
-          map: this._geofenceMap,
-          center: zone.center,
-          radius: zone.radius
-        });
-        this._geofenceOverlays.push(circle);
-      } else if (zone.type === 'polygon') {
-        const polygon = new google.maps.Polygon({
-          paths: zone.path,
-          strokeColor: zone.color,
-          strokeOpacity: 0.8,
-          strokeWeight: 2,
-          fillColor: zone.color,
-          fillOpacity: 0.18,
-          map: this._geofenceMap
-        });
-        this._geofenceOverlays.push(polygon);
-      }
-    });
-
-    // Optional: Add info windows on click
-    this._geofenceOverlays.forEach((overlay, i) => {
-      overlay.addListener('click', (e) => {
-        const zone = geofences[i];
-        const info = new google.maps.InfoWindow({
-          content: `<strong>${zone.name}</strong><br>Type: ${zone.type.charAt(0).toUpperCase() + zone.type.slice(1)}`
-        });
-        info.setPosition(e.latLng || (zone.type === 'circle' ? zone.center : zone.path[0]));
-        info.open(this._geofenceMap);
+    try {
+      await TrackProApp.loadGoogleMapsApi(this.getApiKey());
+      this.#geofenceMap = new google.maps.Map(mapEl, {
+        center,
+        zoom: 15,
+        mapTypeId: 'roadmap',
+        disableDefaultUI: true,
+        zoomControl: true,
       });
-    });
 
-    document.getElementById('geofence-select')?.addEventListener('change', (e) => {
-      const val = e.target.value;
-      if (!val || val === 'Select Geofence') return;
-      const idx = geofences.findIndex(z => z.id === val);
-      if (idx !== -1) {
-        const zone = geofences[idx];
+      this.#geofenceOverlays = geofences.map((zone) => {
         if (zone.type === 'circle') {
-          this._geofenceMap.setCenter(zone.center);
-          this._geofenceMap.setZoom(16);
+          return new google.maps.Circle({
+            strokeColor: zone.color,
+            strokeOpacity: 0.8,
+            strokeWeight: 2,
+            fillColor: zone.color,
+            fillOpacity: 0.18,
+            map: this.#geofenceMap,
+            center: zone.center,
+            radius: zone.radius,
+          });
         } else if (zone.type === 'polygon') {
-          this._geofenceMap.setCenter(zone.path[0]);
-          this._geofenceMap.setZoom(16);
+          return new google.maps.Polygon({
+            paths: zone.path,
+            strokeColor: zone.color,
+            strokeOpacity: 0.8,
+            strokeWeight: 2,
+            fillColor: zone.color,
+            fillOpacity: 0.18,
+            map: this.#geofenceMap,
+          });
         }
-      }
-    });
+      });
+
+      this.#geofenceOverlays.forEach((overlay, i) => {
+        overlay.addListener('click', (e) => {
+          const zone = geofences[i];
+          const info = new google.maps.InfoWindow({
+            content: `<strong>${zone.name}</strong><br>Type: ${zone.type.charAt(0).toUpperCase() + zone.type.slice(1)}`,
+          });
+          info.setPosition(e.latLng || (zone.type === 'circle' ? zone.center : zone.path[0]));
+          info.open(this.#geofenceMap);
+        });
+      });
+
+      document.getElementById('geofence-select')?.addEventListener('change', (e) => {
+        const val = e.target.value;
+        if (!val || val === 'Select Geofence') return;
+        const idx = geofences.findIndex((z) => z.id === val);
+        if (idx !== -1) {
+          const zone = geofences[idx];
+          this.#geofenceMap.setCenter(zone.type === 'circle' ? zone.center : zone.path[0]);
+          this.#geofenceMap.setZoom(16);
+        }
+      });
+    } catch (error) {
+      console.error('Geofence map initialization failed:', error);
+      this.showStatus('❌ Failed to load geofence map.', 'danger');
+    }
   }
 
   /**
    * Initialize the AI route optimization map.
    */
-  initAiRouteOptimizationMap() {
+  async initAiRouteOptimizationMap() {
     const mapEl = document.getElementById('ai-route-optimization-map');
     if (!mapEl) {
       console.error('AI Route Optimization map element not found.');
       return;
     }
-    if (this._aiRouteMap) return;
+    if (this.#aiRouteMap) return;
 
-    // Center on Nairobi or your preferred default
     const center = { lat: -1.286389, lng: 36.817223 };
-    this._aiRouteMap = new google.maps.Map(mapEl, {
-      center,
-      zoom: 13,
-      mapTypeId: 'roadmap',
-      disableDefaultUI: true,
-      zoomControl: true,
-    });
+    const routePath = [
+      { lat: -1.286389, lng: 36.817223 },
+      { lat: -1.292066, lng: 36.821945 },
+      { lat: -1.300000, lng: 36.820000 },
+      { lat: -1.305000, lng: 36.815000 },
+      { lat: -1.310000, lng: 36.810000 },
+    ];
 
-    // Optionally: Add route drawing logic here
-  }
-}
+    try {
+      await TrackProApp.loadGoogleMapsApi(this.getApiKey());
+      this.#aiRouteMap = new google.maps.Map(mapEl, {
+        center,
+        zoom: 13,
+        mapTypeId: 'roadmap',
+        disableDefaultUI: true,
+        zoomControl: true,
+      });
 
-// Add this utility function above or below the TrackProApp class
-function toggleHeader(screenId) {
-  const mainHeader = document.getElementById('header');
-  const screenHeader = document.getElementById('screen-header');
-  const navbar = document.getElementById('navbar');
-  const screen = document.getElementById(screenId);
+      new google.maps.Polyline({
+        path: routePath,
+        geodesic: true,
+        strokeColor: '#ff6b9d',
+        strokeOpacity: 0.95,
+        strokeWeight: 6,
+        map: this.#aiRouteMap,
+      });
 
-  if (!screen) return;
+      new google.maps.Marker({
+        position: routePath[0],
+        map: this.#aiRouteMap,
+        label: 'A',
+        title: 'Start',
+      });
+      new google.maps.Marker({
+        position: routePath[routePath.length - 1],
+        map: this.#aiRouteMap,
+        label: 'B',
+        title: 'End',
+      });
 
-  // Always hide all .screen .header elements
-  document.querySelectorAll('.screen .header').forEach(h => h.style.display = 'none');
-
-  if (screenId === 'home') {
-    if (mainHeader) mainHeader.style.display = '';
-    if (navbar) navbar.style.display = '';
-    if (screenHeader) {
-      screenHeader.style.display = 'none';
-      screenHeader.innerHTML = '';
-      screenHeader.style.opacity = 0;
-    }
-  } else {
-    if (mainHeader) mainHeader.style.display = 'none';
-    if (navbar) navbar.style.display = 'none';
-
-    if (screenHeader) {
-      const screenHeaderDiv = screen.querySelector('.header');
-      if (screenHeaderDiv) {
-        screenHeader.innerHTML = screenHeaderDiv.innerHTML;
-        screenHeader.style.display = '';
-        screenHeader.style.opacity = 1;
-        // No need to show the original header, it's already hidden above
-      } else {
-        screenHeader.style.display = 'none';
-        screenHeader.innerHTML = '';
-        screenHeader.style.opacity = 0;
+      for (let i = 1; i < routePath.length - 1; i++) {
+        new google.maps.Marker({
+          position: routePath[i],
+          map: this.#aiRouteMap,
+          label: `${i + 1}`,
+          icon: {
+            path: google.maps.SymbolPath.CIRCLE,
+            scale: 6,
+            fillColor: '#ffd93d',
+            fillOpacity: 1,
+            strokeWeight: 2,
+            strokeColor: '#fff',
+          },
+          title: `Waypoint ${i}`,
+        });
       }
+    } catch (error) {
+      console.error('AI route optimization map initialization failed:', error);
+      this.showStatus('❌ Failed to load route optimization map.', 'danger');
     }
   }
 
-  // Ensure all back-to-home buttons are accessible and functional
-  document.querySelectorAll('button.back-btn[data-btn="home"]').forEach(function (btn) {
-    btn.addEventListener('click', function () {
-      window.showScreen('home');
+  /**
+   * Setup SOS button to show tracking screen and display all fleet vehicles on the map.
+   */
+  setupSosButton() {
+    const sosBtn = document.getElementById('sos-tracking-button');
+    if (!sosBtn) return;
+
+    sosBtn.addEventListener('click', () => {
+      this.showScreen('tracking');
+      this.#sosMapTries = 0;
+      this.tryAddFleetMarkers();
     });
-    btn.addEventListener('keypress', function (e) {
-      if (e.key === 'Enter' || e.key === ' ') {
-        window.showScreen('home');
+  }
+
+  /**
+   * Attempt to add fleet markers to the map, retrying if the map is not ready.
+   */
+  tryAddFleetMarkers() {
+    const map = this.#map;
+    if (map && window.google && window.google.maps) {
+      const scroll = document.querySelector('.tracking-feature-scroll');
+      if (scroll) scroll.scrollIntoView({ behavior: 'smooth', block: 'end' });
+
+      // Example fleet data (replace with your real fleet data)
+      const fleet = [
+        {
+          name: 'Vehicle 1',
+          desc: 'Toyota Prado - KDA 123A',
+          lat: -1.286389,
+          lng: 36.817223,
+          image: 'icons/icon-32x32.png',
+          status: 'Active',
+          geofence: 'Out',
+          accuracy: 5
+        },
+        {
+          name: 'Vehicle 2',
+          desc: 'Isuzu NQR - KDB 456B',
+          lat: -1.287000,
+          lng: 36.818000,
+          image: 'icons/icon-32x32.png',
+          status: 'Active',
+          geofence: 'In',
+          accuracy: 7
+        },
+      ];
+
+      // Remove previous fleet markers
+      this.#fleetMarkers.forEach((m) => m.setMap(null));
+      this.#fleetMarkers = [];
+
+      // Add new markers for each vehicle
+      fleet.forEach((vehicle) => {
+        const themeColor = '#32062e';
+        const logoUrl = vehicle.image || 'icons/icon-32x32.png';
+        const infoContent = `
+          <div class="d-flex flex-wrap gap-2 align-items-center" style="font-size:0.95em;">
+            <img src="${logoUrl}" alt="TrackPro Logo" style="width:24px;height:24px;border-radius:6px;background:${themeColor};margin-right:6px;box-shadow:0 2px 8px rgba(50,6,46,0.12);">
+            <span class="badge bg-primary bg-gradient">
+              <i class="fas fa-map-marker-alt"></i> ${vehicle.lat.toFixed(6)}, ${vehicle.lng.toFixed(6)}
+            </span>
+            <span class="badge bg-secondary">
+              <i class="fas fa-bullseye"></i> ±${vehicle.accuracy || 'N/A'}m
+            </span>
+            <span class="badge" style="background:#28a7451a;color:#28a745;font-weight:600;">
+              ${vehicle.status || 'Active'}
+            </span>
+            <span class="badge" style="background:${vehicle.geofence === 'In' ? '#28a7451a' : '#dc35451a'};color:${vehicle.geofence === 'In' ? '#28a745' : '#dc3545'};">
+              Geofence: ${vehicle.geofence || 'N/A'}
+            </span>
+          </div>
+        `;
+
+        const marker = new google.maps.Marker({
+          position: { lat: vehicle.lat, lng: vehicle.lng },
+          map: map,
+          title: vehicle.name,
+          icon: {
+            url: logoUrl,
+            scaledSize: new google.maps.Size(40, 40),
+            origin: new google.maps.Point(0, 0),
+            anchor: new google.maps.Point(20, 20),
+          },
+          label: {
+            text: vehicle.name,
+            color: '#fff',
+            fontWeight: 'bold',
+            fontSize: '12px',
+          },
+        });
+
+        const info = new google.maps.InfoWindow({
+          content: infoContent,
+        });
+        marker.addListener('click', () => {
+          info.open(map, marker);
+        });
+
+        this.#fleetMarkers.push(marker);
+      });
+
+      this.showStatus('Fleet vehicles displayed on the map.', 'success');
+    } else if (this.#sosMapTries < 10) {
+      this.#sosMapTries++;
+      setTimeout(() => this.tryAddFleetMarkers(), 200);
+    } else {
+      this.showStatus('Map not ready. Please try again.', 'warning');
+    }
+  }
+
+  /**
+   * Sets up click and keyboard accessibility for quick action cards.
+   */
+  setupQuickActionCards() {
+    const handleActionCard = function (e) {
+      const screenId = this.getAttribute('data-screen');
+      const action = this.getAttribute('data-action');
+      if (screenId) {
+        TrackProApp.getInstance().showScreen(screenId);
+      } else if (action && typeof window[action] === 'function') {
+        window[action]();
       }
+    };
+
+    document.querySelectorAll('.action-card').forEach((card) => {
+      card.addEventListener('click', handleActionCard);
+      card.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          handleActionCard.call(card, e);
+        }
+      });
+      card.setAttribute('tabindex', '0');
+      card.setAttribute('role', 'button');
     });
-    btn.setAttribute('tabindex', '0');
-    btn.setAttribute('role', 'button');
-  });
+  }
+
+  /**
+   * Render 5 trip histories as polylines on the history map.
+   */
+  async renderTripHistoriesOnHistoryMap() {
+    const mapEl = document.getElementById('history-map');
+    if (!mapEl) return;
+
+    if (this.#historyMap) return;
+
+    const trips = [
+      [
+        { lat: -1.286389, lng: 36.817223 },
+        { lat: -1.287, lng: 36.818 },
+        { lat: -1.288, lng: 36.819 },
+        { lat: -1.289, lng: 36.820 },
+      ],
+      [
+        { lat: -1.286389, lng: 36.817223 },
+        { lat: -1.285, lng: 36.816 },
+        { lat: -1.284, lng: 36.815 },
+        { lat: -1.283, lng: 36.814 },
+      ],
+      [
+        { lat: -1.286389, lng: 36.817223 },
+        { lat: -1.287, lng: 36.816 },
+        { lat: -1.288, lng: 36.815 },
+        { lat: -1.289, lng: 36.814 },
+      ],
+      [
+        { lat: -1.286389, lng: 36.817223 },
+        { lat: -1.286, lng: 36.818 },
+        { lat: -1.285, lng: 36.819 },
+        { lat: -1.284, lng: 36.820 },
+      ],
+      [
+        { lat: -1.286389, lng: 36.817223 },
+        { lat: -1.287, lng: 36.817 },
+        { lat: -1.288, lng: 36.817 },
+        { lat: -1.289, lng: 36.817 },
+      ],
+    ];
+
+    const colors = ['#ff6b9d', '#ffd93d', '#28a745', '#4a0a3f', '#00bcd4'];
+
+    try {
+      await TrackProApp.loadGoogleMapsApi(this.getApiKey());
+      this.#historyMap = new google.maps.Map(mapEl, {
+        center: { lat: -1.286389, lng: 36.817223 },
+        zoom: 14,
+        mapTypeId: 'roadmap',
+        disableDefaultUI: true,
+        zoomControl: true,
+      });
+
+      trips.forEach((trip, idx) => {
+        new google.maps.Polyline({
+          path: trip,
+          geodesic: true,
+          strokeColor: colors[idx % colors.length],
+          strokeOpacity: 0.9,
+          strokeWeight: 5,
+          map: this.#historyMap,
+        });
+
+        new google.maps.Marker({
+          position: trip[0],
+          map: this.#historyMap,
+          label: `${idx + 1}`,
+          title: `Trip ${idx + 1} Start`,
+        });
+        new google.maps.Marker({
+          position: trip[trip.length - 1],
+          map: this.#historyMap,
+          icon: {
+            path: google.maps.SymbolPath.CIRCLE,
+            scale: 6,
+            fillColor: colors[idx % colors.length],
+            fillOpacity: 1,
+            strokeWeight: 2,
+            strokeColor: '#fff',
+          },
+          title: `Trip ${idx + 1} End`,
+        });
+      });
+    } catch (error) {
+      console.error('History map initialization failed:', error);
+      this.showStatus('❌ Failed to load history map.', 'danger');
+    }
+  }
+
+  /**
+   * Configure alert settings based on user selection.
+   */
+  configureAlert() {
+    const type = document.getElementById('alert-type')?.value;
+    if (type === 'geofence') {
+      alert('Configure Geofence Entry/Exit alert.');
+    } else if (type === 'speed') {
+      alert('Configure Speeding alert.');
+    } else if (type === 'maintenance') {
+      alert('Configure Maintenance alert.');
+    } else {
+      alert('Please select an alert type.');
+    }
+  }
 }
 
 // Initialize the app when the window loads
@@ -1010,164 +1269,18 @@ window.addEventListener('load', () => {
   app.onDeviceReady();
 });
 
-window.showScreen = function(screenId) {
+// Global showScreen function
+window.showScreen = function (screenId) {
   TrackProApp.getInstance().showScreen(screenId);
 };
-window['ai-route-optimization'] = function() {
+
+// Global action functions
+window['ai-route-optimization'] = function () {
   window.showScreen('ai-route-optimization');
 };
-window['alerts'] = function() {
+window['alerts'] = function () {
   window.showScreen('alerts');
 };
-window['support'] = function() {
+window['support'] = function () {
   window.showScreen('support');
 };
-
-/**
- * Sets up click and keyboard accessibility for quick action cards.
- * Call this after DOM is ready or after adding new .action-card elements.
- */
-function setupQuickActionCards() {
-  function handleActionCard(e) {
-    const screenId = this.getAttribute('data-screen');
-    const action = this.getAttribute('data-action');
-    if (screenId) {
-      window.showScreen(screenId);
-    } else if (action && typeof window[action] === 'function') {
-      window[action]();
-    }
-  }
-
-  document.querySelectorAll('.action-card').forEach(function (card) {
-    card.addEventListener('click', handleActionCard);
-    card.addEventListener('keypress', function (e) {
-      if (e.key === 'Enter' || e.key === ' ') {
-        handleActionCard.call(this, e);
-      }
-    });
-    card.setAttribute('tabindex', '0');
-    card.setAttribute('role', 'button');
-  });
-
-}
-
-/**
- * Render 5 trip histories as polylines on the history-map.
- */
-function renderTripHistoriesOnHistoryMap() {
-    const mapEl = document.getElementById('history-map');
-    if (!mapEl) return;
-
-    // Only initialize once
-    if (window._historyMap) return;
-
-    // Example trip data (replace with real data as needed)
-    const trips = [
-        [
-            { lat: -1.286389, lng: 36.817223 },
-            { lat: -1.287, lng: 36.818 },
-            { lat: -1.288, lng: 36.819 },
-            { lat: -1.289, lng: 36.820 }
-        ],
-        [
-            { lat: -1.286389, lng: 36.817223 },
-            { lat: -1.285, lng: 36.816 },
-            { lat: -1.284, lng: 36.815 },
-            { lat: -1.283, lng: 36.814 }
-        ],
-        [
-            { lat: -1.286389, lng: 36.817223 },
-            { lat: -1.287, lng: 36.816 },
-            { lat: -1.288, lng: 36.815 },
-            { lat: -1.289, lng: 36.814 }
-        ],
-        [
-            { lat: -1.286389, lng: 36.817223 },
-            { lat: -1.286, lng: 36.818 },
-            { lat: -1.285, lng: 36.819 },
-            { lat: -1.284, lng: 36.820 }
-        ],
-        [
-            { lat: -1.286389, lng: 36.817223 },
-            { lat: -1.287, lng: 36.817 },
-            { lat: -1.288, lng: 36.817 },
-            { lat: -1.289, lng: 36.817 }
-        ]
-    ];
-
-    const colors = ['#ff6b9d', '#ffd93d', '#28a745', '#4a0a3f', '#00bcd4'];
-
-    // Center map on Nairobi
-    window._historyMap = new google.maps.Map(mapEl, {
-        center: { lat: -1.286389, lng: 36.817223 },
-        zoom: 14,
-        mapTypeId: 'roadmap',
-        disableDefaultUI: true,
-        zoomControl: true,
-    });
-
-    // Draw each trip as a polyline
-    trips.forEach((trip, idx) => {
-        new google.maps.Polyline({
-            path: trip,
-            geodesic: true,
-            strokeColor: colors[idx % colors.length],
-            strokeOpacity: 0.9,
-            strokeWeight: 5,
-            map: window._historyMap
-        });
-
-        // Optionally, add a marker at the start and end
-        new google.maps.Marker({
-            position: trip[0],
-            map: window._historyMap,
-            label: `${idx + 1}`,
-            title: `Trip ${idx + 1} Start`
-        });
-        new google.maps.Marker({
-            position: trip[trip.length - 1],
-            map: window._historyMap,
-            icon: {
-                path: google.maps.SymbolPath.CIRCLE,
-                scale: 6,
-                fillColor: colors[idx % colors.length],
-                fillOpacity: 1,
-                strokeWeight: 2,
-                strokeColor: '#fff'
-            },
-            title: `Trip ${idx + 1} End`
-        });
-    });
-}
-
-// Call this when the history screen is shown
-function initHistoryMapIfNeeded() {
-    if (document.getElementById('history-map') && typeof google !== 'undefined' && google.maps) {
-        renderTripHistoriesOnHistoryMap();
-    }
-}
-
-// Hook into your screen switching logic
-const originalShowScreen = window.showScreen;
-window.showScreen = function(screenId) {
-    originalShowScreen(screenId);
-    if (screenId === 'history') {
-        setTimeout(initHistoryMapIfNeeded, 400); // Wait for screen animation
-    }
-};
-
-/**
- * Configure alert settings based on user selection.
- */
-function configureAlert() {
-    const type = document.getElementById('alert-type').value;
-    if (type === "geofence") {
-        alert("Configure Geofence Entry/Exit alert.");
-    } else if (type === "speed") {
-        alert("Configure Speeding alert.");
-    } else if (type === "maintenance") {
-        alert("Configure Maintenance alert.");
-    } else {
-        alert("Please select an alert type.");
-    }
-}
