@@ -6,7 +6,15 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta http-equiv="Content-Security-Policy" content="default-src 'self' https://trackpro.arybit.co.ke https://maps.googleapis.com https://api.paystack.co https://js.stripe.com; style-src 'self' https://cdn.jsdelivr.net https://fonts.googleapis.com 'unsafe-inline'; script-src 'self' https://cdn.jsdelivr.net https://unpkg.com; img-src 'self' data: https://trackpro.arybit.co.ke; media-src 'self'; worker-src 'self' blob:; connect-src 'self' ws: https://trackpro.arybit.co.ke https://maps.googleapis.com https://api.paystack.co https://api.stripe.com">
+    <meta http-equiv="Content-Security-Policy" content="
+  default-src 'self' https://trackpro.arybit.co.ke https://maps.googleapis.com https://maps.gstatic.com https://api.paystack.co https://js.stripe.com;
+  style-src 'self' https://cdn.jsdelivr.net https://fonts.googleapis.com https://maps.googleapis.com https://maps.gstatic.com 'unsafe-inline';
+  script-src 'self' https://cdn.jsdelivr.net https://unpkg.com https://maps.googleapis.com https://maps.gstatic.com;
+  img-src 'self' data: https://trackpro.arybit.co.ke https://maps.googleapis.com https://maps.gstatic.com;
+  media-src 'self';
+  worker-src 'self' blob:;
+  connect-src 'self' ws: https://trackpro.arybit.co.ke https://maps.googleapis.com https://maps.gstatic.com https://api.paystack.co https://api.stripe.com
+">
     <meta name="format-detection" content="telephone=no">
     <meta name="msapplication-tap-highlight" content="no">
     <meta name="viewport" content="initial-scale=1, width=device-width, viewport-fit=cover">
@@ -98,12 +106,17 @@
         </div>
       </nav>
       <!-- Status Bar -->
-      <div class="status-bar d-flex justify-content-between align-items-center" role="status">
+      <div class="status-bar d-flex justify-content-between align-items-center d-none" role="status">
           <span id="connection-status" aria-label="Connection status">🟢 Online</span>
           <span id="location-status" aria-label="Location status">📍 GPS Ready</span>
           <span id="time-display" aria-label="Current time"></span>
       </div>
     </header>
+
+    <!-- Fixed header for screens except Home -->
+    <div id="screen-header" class="header d-flex align-items-center justify-content-between" style="display: none; position: fixed; top: 0; left: 0; right: 0; z-index: 999;">
+        <!-- Content will be set dynamically -->
+    </div>
 
     <div class="loading" id="loading" role="alert" aria-live="assertive">
         <div class="spinner" aria-hidden="true"></div>
@@ -118,57 +131,65 @@
                 <p class="hero-subtitle">Real-time GPS tracking, analytics, and fleet optimization</p>
             </div>
             <div class="quick-actions row row-cols-2 row-cols-md-4 g-3 px-3" role="navigation" aria-label="Quick actions">
+                <!-- Live Tracking -->
                 <div class="col">
-                    <div class="action-card" role="button" tabindex="0" onclick="showScreen('tracking')" aria-label="Live Tracking">
+                    <div class="action-card" role="button" tabindex="0" data-screen="tracking" aria-label="Live Tracking">
                         <span class="action-icon" aria-hidden="true">📍</span>
                         <div class="action-title">Live Tracking</div>
                         <div class="action-desc">Monitor vehicles in real-time with GPS</div>
                     </div>
                 </div>
+                <!-- Geofencing -->
                 <div class="col">
-                    <div class="action-card" role="button" tabindex="0" onclick="showScreen('geofencing')" aria-label="Geofencing">
+                    <div class="action-card" role="button" tabindex="0" data-screen="geofencing" aria-label="Geofencing">
                         <span class="action-icon" aria-hidden="true">🌍</span>
                         <div class="action-title">Geofencing</div>
                         <div class="action-desc">Set zones for entry/exit alerts</div>
                     </div>
                 </div>
+                <!-- AI Route Optimization -->
                 <div class="col">
-                    <div class="action-card" role="button" tabindex="0" onclick="showScreen('reports')" aria-label="Reports and Analytics">
-                        <span class="action-icon" aria-hidden="true">📊</span>
-                        <div class="action-title">Reports & Analytics</div>
-                        <div class="action-desc">Fuel, driver, and route insights</div>
-                    </div>
-                </div>
-                <div class="col">
-                    <div class="action-card" role="button" tabindex="0" onclick="showScreen('devices')" aria-label="Device Management">
-                        <span class="action-icon" aria-hidden="true">📱</span>
-                        <div class="action-title">Device Management</div>
-                        <div class="action-desc">Manage GPS devices and settings</div>
-                    </div>
-                </div>
-                <div class="col">
-                    <div class="action-card" role="button" tabindex="0" onclick="startRouteOptimization()" aria-label="AI Route Optimization">
+                    <div class="action-card" role="button" tabindex="0" data-action="ai-route-optimization" aria-label="AI Route Optimization">
                         <span class="action-icon" aria-hidden="true">🧠</span>
                         <div class="action-title">AI Route Optimization</div>
                         <div class="action-desc">Plan efficient routes with AI</div>
                     </div>
                 </div>
+                <!-- Reports & Analytics -->
                 <div class="col">
-                    <div class="action-card" role="button" tabindex="0" onclick="showScreen('history')" aria-label="Trip History">
+                    <div class="action-card" role="button" tabindex="0" data-screen="reports" aria-label="Reports and Analytics">
+                        <span class="action-icon" aria-hidden="true">📊</span>
+                        <div class="action-title">Reports & Analytics</div>
+                        <div class="action-desc">Fuel, driver, and route insights</div>
+                    </div>
+                </div>
+                <!-- Device Management -->
+                <div class="col">
+                    <div class="action-card" role="button" tabindex="0" data-screen="devices" aria-label="Device Management">
+                        <span class="action-icon" aria-hidden="true">📱</span>
+                        <div class="action-title">Device Management</div>
+                        <div class="action-desc">Manage GPS devices and settings</div>
+                    </div>
+                </div>
+                <!-- Trip History -->
+                <div class="col">
+                    <div class="action-card" role="button" tabindex="0" data-screen="history" aria-label="Trip History">
                         <span class="action-icon" aria-hidden="true">🕒</span>
                         <div class="action-title">Trip History</div>
                         <div class="action-desc">View and replay past journeys</div>
                     </div>
                 </div>
+                <!-- Alert Management -->
                 <div class="col">
-                    <div class="action-card" role="button" tabindex="0" onclick="openAlerts()" aria-label="Alert Management">
+                    <div class="action-card" role="button" tabindex="0" data-action="alerts" aria-label="Alert Management">
                         <span class="action-icon" aria-hidden="true">🔔</span>
                         <div class="action-title">Alert Management</div>
                         <div class="action-desc">Configure and view alerts</div>
                     </div>
                 </div>
+                <!-- Priority Support -->
                 <div class="col">
-                    <div class="action-card" role="button" tabindex="0" onclick="openSupport()" aria-label="Priority Support">
+                    <div class="action-card" role="button" tabindex="0" data-action="support" aria-label="Priority Support">
                         <span class="action-icon" aria-hidden="true">📞</span>
                         <div class="action-title">Priority Support</div>
                         <div class="action-desc">24/7 support for Pro/Enterprise</div>
@@ -179,136 +200,322 @@
 
         <!-- Tracking Screen -->
         <div class="screen" id="tracking" role="main" aria-hidden="true">
-            <div class="header d-flex align-items-center justify-content-between">
-                <button class="back-btn" onclick="showScreen('home')" aria-label="Back to Home">←</button>
+            <div class="header d-flex align-items-center justify-content-between d-none">
+                <button type="button" class="back-btn" data-btn="home" aria-label="Back to Home">←</button>
                 <div class="logo mx-auto text-center">📍 Live Tracking</div>
             </div>
             <div class="tracking-section px-3 pb-5">
-                <div id="map" style="height: 400px;" role="region" aria-label="Live tracking map"></div>
-                <div class="card-body py-3 px-4 d-flex flex-column flex-md-row align-items-md-center justify-content-between gap-3 mt-3">
-                    <div class="d-flex flex-wrap gap-3 align-items-center">
-                        <span class="badge bg-primary bg-gradient"><i class="fas fa-map-marker-alt" aria-hidden="true"></i> <span id="lat">N/A</span>, <span id="lng">N/A</span></span>
-                        <span class="badge bg-secondary"><i class="fas fa-bullseye" aria-hidden="true"></i> <span id="accuracy">N/A</span></span>
-                        <span class="badge" id="vehicle-status">Active</span>
-                        <span class="badge" id="geofence-status">Inactive</span>
-                    </div>
-                    <a id="view-map-link" href="#" target="_blank" class="btn btn-sm btn-outline-light d-flex align-items-center gap-2" aria-label="Open in Google Maps">
-                        <i class="fas fa-external-link-alt" aria-hidden="true"></i> Google Maps
-                    </a>
-                </div>
+                <div id="map" style="height: calc(100vh - 150px); width: 100%;" role="region" aria-label="Live tracking map"></div>
                 <div class="text-center mt-4">
                     <small class="text-muted">Vehicle locations updated every 5–15 seconds via WebSockets.</small>
+                </div>
+                <!-- Tracking Widget Card -->
+                <div class="tracking-widget-card" id="trackingWidgetCard">
+                    <button class="tracking-widget-close" onclick="document.getElementById('trackingWidgetCard').style.display='none'" aria-label="Close widget">×</button>
+                    <!-- Logo and Title Row -->
+                    <div class="d-flex align-items-center gap-2 mb-2">
+                        <img src="icons/icon-32x32.png" alt="TrackPro Logo" style="width:32px;height:32px;border-radius:8px;background:#32062e;box-shadow:0 2px 8px rgba(50,6,46,0.12);">
+                        <span class="fw-bold" style="font-size:1.1rem;letter-spacing:0.5px;">Live Tracking</span>
+                    </div>
+                    <!-- Vehicle Selector -->
+                    <div class="input-group mb-3 flex-nowrap" style="gap: 0.5rem;">
+                        <select class="form-select" id="vehicle-select" aria-label="Select vehicle" style="max-width: 180px;">
+                            <option selected>Select Vehicle</option>
+                            <option value="vehicle1">Vehicle 1</option>
+                            <option value="vehicle2">Vehicle 2</option>
+                        </select>
+                        <button class="btn btn-primary" onclick="refreshMap()" aria-label="Refresh map" style="white-space: nowrap; min-width: 90px;">
+                            Refresh
+                        </button>
+                    </div>
+                    <!-- Status Badges and Google Maps Link -->
+                    <div class="card-body py-3 px-2 d-flex flex-column flex-md-row align-items-md-center justify-content-between gap-3">
+                        <div class="d-flex flex-wrap gap-2 align-items-center mb-2 mb-md-0">
+                            <span class="badge bg-primary bg-gradient">
+                                <i class="fas fa-map-marker-alt" aria-hidden="true"></i>
+                                <span id="lat">N/A</span>, <span id="lng">N/A</span>
+                            </span>
+                            <span class="badge bg-secondary">
+                                <i class="fas fa-bullseye" aria-hidden="true"></i>
+                                <span id="accuracy">N/A</span>
+                            </span>
+                            <span class="badge" id="vehicle-status">Active</span>
+                            <span class="badge" id="geofence-status">Inactive</span>
+                        </div>
+                        <a id="view-map-link" href="#" target="_blank" class="btn btn-sm btn-outline-light d-flex align-items-center gap-2" aria-label="Open in Google Maps">
+                            <i class="fas fa-external-link-alt" aria-hidden="true"></i> Google Maps
+                        </a>
+                    </div>
                 </div>
             </div>
         </div>
 
         <!-- Geofencing Screen -->
         <div class="screen" id="geofencing" role="main" aria-hidden="true">
-            <div class="header d-flex align-items-center justify-content-between">
-                <button class="back-btn" onclick="showScreen('home')" aria-label="Back to Home">←</button>
+            <div class="header d-flex align-items-center justify-content-between d-none">
+                <button type="button" class="back-btn" data-btn="home" aria-label="Back to Home">←</button>
                 <div class="logo mx-auto text-center">🌍 Geofencing</div>
             </div>
-            <div class="geofencing-section px-3 pb-5" role="list" aria-label="Geofencing features">
-                <div class="feature-card" role="listitem">
-                    <div class="feature-header d-flex align-items-center gap-3 mb-3">
-                        <div class="feature-icon" aria-hidden="true">🌍</div>
-                        <div class="feature-title">Create Geofences</div>
+            <div class="geofencing-section" style="padding:0 !important; margin:0 !important; height:100vh; width:100vw; position:fixed; top:0; left:0; z-index:1; background:#000;">
+                <div id="geofence-map" role="region" aria-label="Geofencing map"></div>
+                <!-- Feature Cards Scrollable Section -->
+                <div class="geofence-feature-scroll">
+                    <div class="feature-card" role="listitem">
+                        <div class="feature-header d-flex align-items-center gap-3 mb-3">
+                            <div class="feature-icon" aria-hidden="true">🌍</div>
+                            <div class="feature-title">Create Geofences</div>
+                        </div>
+                        <div class="feature-desc">Set circular or polygonal zones for real-time entry/exit alerts.</div>
                     </div>
-                    <div class="feature-desc">Set circular or polygonal zones for real-time entry/exit alerts.</div>
-                </div>
-                <div class="feature-card" role="listitem">
-                    <div class="feature-header d-flex align-items-center gap-3 mb-3">
-                        <div class="feature-icon" aria-hidden="true">🔔</div>
-                        <div class="feature-title">Alert Notifications</div>
+                    <div class="feature-card" role="listitem">
+                        <div class="feature-header d-flex align-items-center gap-3 mb-3">
+                            <div class="feature-icon" aria-hidden="true">🔔</div>
+                            <div class="feature-title">Alert Notifications</div>
+                        </div>
+                        <div class="feature-desc">Receive SMS/email alerts for geofence events.</div>
                     </div>
-                    <div class="feature-desc">Receive SMS/email alerts for geofence events.</div>
+                    <div class="feature-card" role="listitem">
+                        <div class="feature-header d-flex align-items-center gap-3 mb-3">
+                            <div class="feature-icon" aria-hidden="true">📋</div>
+                            <div class="feature-title">Geofence History</div>
+                        </div>
+                        <div class="feature-desc">View entry/exit logs for each zone.</div>
+                    </div>
                 </div>
             </div>
         </div>
 
         <!-- Reports & Analytics Screen -->
         <div class="screen" id="reports" role="main" aria-hidden="true">
-            <div class="header d-flex align-items-center justify-content-between">
-                <button class="back-btn" onclick="showScreen('home')" aria-label="Back to Home">←</button>
+            <div class="header d-flex align-items-center justify-content-between d-none">
+                <button type="button" class="back-btn" data-btn="home" aria-label="Back to Home">←</button>
                 <div class="logo mx-auto text-center">📊 Reports & Analytics</div>
             </div>
-            <div class="reports-section px-3 pb-5" role="list" aria-label="Reports features">
-                <div class="feature-card" role="listitem">
-                    <div class="feature-header d-flex align-items-center gap-3 mb-3">
-                        <div class="feature-icon" aria-hidden="true">📊</div>
-                        <div class="feature-title">Fuel Reports</div>
+            <div class="reports-section" style="position:relative; height:100vh; width:100vw; background:#000;">
+                <!-- Reports & Analytics Quick Actions Grid -->
+                <div class="quick-actions row row-cols-2 row-cols-md-4 g-3 px-3" role="navigation" aria-label="Reports Quick Actions">
+                    <div class="col">
+                        <div class="action-card" role="button" tabindex="0" data-report="fuel" aria-label="Fuel Report">
+                            <span class="action-icon" aria-hidden="true">⛽</span>
+                            <div class="action-title">Fuel Report</div>
+                            <div class="action-desc">Track fuel consumption and efficiency</div>
+                        </div>
                     </div>
-                    <div class="feature-desc">Track fuel consumption and efficiency.</div>
+                    <div class="col">
+                        <div class="action-card" role="button" tabindex="0" data-report="driver" aria-label="Driver Behavior">
+                            <span class="action-icon" aria-hidden="true">🚗</span>
+                            <div class="action-title">Driver Behavior</div>
+                            <div class="action-desc">Monitor speeding, idling, harsh braking</div>
+                        </div>
+                    </div>
+                    <div class="col">
+                        <div class="action-card" role="button" tabindex="0" data-report="route" aria-label="Route Optimization">
+                            <span class="action-icon" aria-hidden="true">🛤️</span>
+                            <div class="action-title">Route Optimization</div>
+                            <div class="action-desc">Analyze routes for efficiency and cost</div>
+                        </div>
+                    </div>
+                    <div class="col">
+                        <div class="action-card" role="button" tabindex="0" data-report="custom" aria-label="Custom Report">
+                            <span class="action-icon" aria-hidden="true">📄</span>
+                            <div class="action-title">Custom Report</div>
+                            <div class="action-desc">Export data as CSV or PDF</div>
+                        </div>
+                    </div>
                 </div>
-                <div class="feature-card" role="listitem">
-                    <div class="feature-header d-flex align-items-center gap-3 mb-3">
-                        <div class="feature-icon" aria-hidden="true">🚗</div>
-                        <div class="feature-title">Driver Behavior</div>
+                <!-- Reports & Analytics Scrollable Section -->
+                <div class="reports-feature-scroll" style="position:absolute; bottom:0; left:0; width:100vw; max-width:100vw; z-index:10; background:linear-gradient(0deg,rgba(32,32,32,0.96) 80%,rgba(32,32,32,0.7) 100%,transparent 100%); padding:18px 10px 90px 10px; box-sizing:border-box; overflow-x:auto; overflow-y:auto; display:flex; flex-direction:row; gap:16px;">
+                    <div class="feature-card" role="listitem">
+                        <div class="feature-header d-flex align-items-center gap-3 mb-3">
+                            <div class="feature-icon" aria-hidden="true">📊</div>
+                            <div class="feature-title">Fuel Reports</div>
+                        </div>
+                        <div class="feature-desc">Track fuel consumption and efficiency.</div>
                     </div>
-                    <div class="feature-desc">Monitor speeding, idling, and harsh braking.</div>
-                </div>
-                <div class="feature-card" role="listitem">
-                    <div class="feature-header d-flex align-items-center gap-3 mb-3">
-                        <div class="feature-icon" aria-hidden="true">🛤️</div>
-                        <div class="feature-title">Route Optimization</div>
+                    <div class="feature-card" role="listitem">
+                        <div class="feature-header d-flex align-items-center gap-3 mb-3">
+                            <div class="feature-icon" aria-hidden="true">🚗</div>
+                            <div class="feature-title">Driver Behavior</div>
+                        </div>
+                        <div class="feature-desc">Monitor speeding, idling, and harsh braking.</div>
                     </div>
-                    <div class="feature-desc">Analyze routes for efficiency and cost savings.</div>
+                    <div class="feature-card" role="listitem">
+                        <div class="feature-header d-flex align-items-center gap-3 mb-3">
+                            <div class="feature-icon" aria-hidden="true">🛤️</div>
+                            <div class="feature-title">Route Optimization</div>
+                        </div>
+                        <div class="feature-desc">Analyze routes for efficiency and cost savings.</div>
+                    </div>
+                    <div class="feature-card" role="listitem">
+                        <div class="feature-header d-flex align-items-center gap-3 mb-3">
+                            <div class="feature-icon" aria-hidden="true">📄</div>
+                            <div class="feature-title">Export Reports</div>
+                        </div>
+                        <div class="feature-desc">Download trip and report data in CSV/PDF formats.</div>
+                    </div>
                 </div>
             </div>
         </div>
 
-        <!-- Device Management Screen -->
-        <div class="screen" id="devices" role="main" aria-hidden="true">
-            <div class="header d-flex align-items-center justify-content-between">
-                <button class="back-btn" onclick="showScreen('home')" aria-label="Back to Home">←</button>
-                <div class="logo mx-auto text-center">📱 Device Management</div>
+        <!-- AI Route Optimization Screen -->
+        <div class="screen" id="ai-route-optimization" role="main" aria-hidden="true">
+            <div class="header d-flex align-items-center justify-content-between d-none">
+                <button type="button" class="back-btn" data-btn="home" aria-label="Back to Home">←</button>
+                <div class="logo mx-auto text-center">🧠 AI Route Optimization</div>
             </div>
-            <div class="devices-section px-3 pb-5" role="list" aria-label="Device management features">
-                <div class="feature-card" role="listitem">
-                    <div class="feature-header d-flex align-items-center gap-3 mb-3">
-                        <div class="feature-icon" aria-hidden="true">📱</div>
-                        <div class="feature-title">Register Devices</div>
+            <div class="route-optimization-section" style="padding:0 !important; margin:0 !important; height:100vh; width:100vw; position:fixed; top:0; left:0; z-index:1; background:#000;">
+                <div id="ai-route-optimization-map" role="region" aria-label="AI Route Optimization map" style="width:100vw; height:100vh; min-width:0; min-height:0; position:relative; z-index:2; border-radius:0 !important; margin:0 !important; box-shadow:none !important; background:#000;"></div>
+                <!-- Feature Cards Scrollable Section -->
+                <div class="ai-route-feature-scroll" style="position:absolute; bottom:0; left:0; width:100vw; max-width:100vw; z-index:10; background:linear-gradient(0deg,rgba(32,32,32,0.96) 80%,rgba(32,32,32,0.7) 100%,transparent 100%); padding:18px 10px 90px 10px; box-sizing:border-box; overflow-x:auto; overflow-y:auto; display:flex; flex-direction:row; gap:16px;">
+                    <div class="feature-card" role="listitem">
+                        <div class="feature-header d-flex align-items-center gap-3 mb-3">
+                            <div class="feature-icon" aria-hidden="true">🧠</div>
+                            <div class="feature-title">Route Planning</div>
+                        </div>
+                        <div class="feature-desc">Generate efficient routes using AI algorithms.</div>
                     </div>
-                    <div class="feature-desc">Add GPS devices using IMEI and SIM details.</div>
-                </div>
-                <div class="feature-card" role="listitem">
-                    <div class="feature-header d-flex align-items-center gap-3 mb-3">
-                        <div class="feature-icon" aria-hidden="true">⚙️</div>
-                        <div class="feature-title">Device Configuration</div>
+                    <div class="feature-card" role="listitem">
+                        <div class="feature-header d-flex align-items-center gap-3 mb-3">
+                            <div class="feature-icon" aria-hidden="true">⏱️</div>
+                            <div class="feature-title">Time Optimization</div>
+                        </div>
+                        <div class="feature-desc">Minimize travel time with real-time traffic data.</div>
                     </div>
-                    <div class="feature-desc">Update firmware and settings via API.</div>
+                    <div class="feature-card" role="listitem">
+                        <div class="feature-header d-flex align-items-center gap-3 mb-3">
+                            <div class="feature-icon" aria-hidden="true">💰</div>
+                            <div class="feature-title">Cost Savings</div>
+                        </div>
+                        <div class="feature-desc">Reduce fuel and operational costs.</div>
+                    </div>
                 </div>
             </div>
         </div>
 
         <!-- Trip History Screen -->
         <div class="screen" id="history" role="main" aria-hidden="true">
-            <div class="header d-flex align-items-center justify-content-between">
-                <button class="back-btn" onclick="showScreen('home')" aria-label="Back to Home">←</button>
+            <div class="header d-flex align-items-center justify-content-between d-none">
+                <button type="button" class="back-btn" data-btn="home" aria-label="Back to Home">←</button>
                 <div class="logo mx-auto text-center">🕒 Trip History</div>
             </div>
-            <div class="history-section px-3 pb-5" role="list" aria-label="Trip history features">
+            <div class="history-section" style="padding:0 !important; margin:0 !important; height:100vh; width:100vw; position:fixed; top:0; left:0; z-index:1; background:#000;">
+                <div id="history-map" role="region" aria-label="Trip history map" style="width:100vw; height:100vh; min-width:0; min-height:0; position:relative; z-index:2; border-radius:0 !important; margin:0 !important; box-shadow:none !important; background:#000;"></div>
+                <!-- Feature Cards Scrollable Section -->
+                <div class="history-feature-scroll" style="position:absolute; bottom:0; left:0; width:100vw; max-width:100vw; z-index:10; background:linear-gradient(0deg,rgba(32,32,32,0.96) 80%,rgba(32,32,32,0.7) 100%,transparent 100%); padding:18px 10px 90px 10px; box-sizing:border-box; overflow-x:auto; overflow-y:auto; display:flex; flex-direction:row; gap:16px;">
+                    <div class="feature-card" role="listitem">
+                        <div class="feature-header d-flex align-items-center gap-3 mb-3">
+                            <div class="feature-icon" aria-hidden="true">🕒</div>
+                            <div class="feature-title">Journey Replay</div>
+                        </div>
+                        <div class="feature-desc">Replay past trips with timestamps and stops.</div>
+                    </div>
+                    <div class="feature-card" role="listitem">
+                        <div class="feature-header d-flex align-items-center gap-3 mb-3">
+                            <div class="feature-icon" aria-hidden="true">📄</div>
+                            <div class="feature-title">Export Reports</div>
+                        </div>
+                        <div class="feature-desc">Download trip data in CSV/PDF formats.</div>
+                    </div>
+                    <!-- Add more feature cards as needed -->
+                </div>
+                <!-- Trip selector and replay button overlay (optional, can be styled as a floating widget) -->
+                <div class="trip-history-widget" style="position:absolute;top:24px;left:50%;transform:translateX(-50%);z-index:20;max-width:400px;width:95vw;background:rgba(50,6,46,0.92);border-radius:18px;box-shadow:0 8px 32px rgba(0,0,0,0.25);padding:18px 14px 14px 14px;">
+                    <div class="input-group mb-3">
+                        <select class="form-select" id="trip-select" aria-label="Select trip">
+                            <option selected>Select Trip</option>
+                            <option value="trip1">Trip 1 - 2025-07-01</option>
+                            <option value="trip2">Trip 2 - 2025-07-02</option>
+                        </select>
+                        <button class="btn btn-primary" onclick="replayTrip()" aria-label="Replay trip">Replay</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Alert Management Screen -->
+        <div class="screen" id="alerts" role="main" aria-hidden="true">
+            <div class="header d-flex align-items-center justify-content-between d-none">
+                <button type="button" class="back-btn" data-btn="home" aria-label="Back to Home">←</button>
+                <div class="logo mx-auto text-center">🔔 Alert Management</div>
+            </div>
+            <div class="alerts-section" style="padding:0 !important; margin:0 !important; height:100vh; width:100vw; position:fixed; top:0; left:0; z-index:1; background:#000;">
+                <!-- Alert Management Feature Cards Scrollable Section -->
+                <div class="alerts-feature-scroll" style="position:absolute; bottom:0; left:0; width:100vw; max-width:100vw; z-index:10; background:linear-gradient(0deg,rgba(32,32,32,0.96) 80%,rgba(32,32,32,0.7) 100%,transparent 100%); padding:18px 10px 90px 10px; box-sizing:border-box; overflow-x:auto; overflow-y:auto; display:flex; flex-direction:row; gap:16px;">
+                    <div class="feature-card" role="listitem">
+                        <div class="feature-header d-flex align-items-center gap-3 mb-3">
+                            <div class="feature-icon" aria-hidden="true">🔔</div>
+                            <div class="feature-title">Configure Alerts</div>
+                        </div>
+                        <div class="feature-desc">Set up alerts for geofence, speeding, or maintenance.</div>
+                    </div>
+                    <div class="feature-card" role="listitem">
+                        <div class="feature-header d-flex align-items-center gap-3 mb-3">
+                            <div class="feature-icon" aria-hidden="true">📬</div>
+                            <div class="feature-title">Notification Settings</div>
+                        </div>
+                        <div class="feature-desc">Choose SMS, email, or in-app notifications.</div>
+                    </div>
+                    <div class="feature-card" role="listitem">
+                        <div class="feature-header d-flex align-items-center gap-3 mb-3">
+                            <div class="feature-icon" aria-hidden="true">📜</div>
+                            <div class="feature-title">Alert History</div>
+                        </div>
+                        <div class="feature-desc">View past alerts and their details.</div>
+                    </div>
+                </div>
+                <!-- Alert Type Selector Widget (optional, floating at the top) -->
+                <div class="alert-type-widget" style="position:absolute;top:24px;left:50%;transform:translateX(-50%);z-index:20;max-width:400px;width:95vw;background:rgba(50,6,46,0.92);border-radius:18px;box-shadow:0 8px 32px rgba(0,0,0,0.25);padding:18px 14px 14px 14px;">
+                    <div class="input-group mb-3">
+                        <select class="form-select" id="alert-type" aria-label="Select alert type">
+                            <option selected>Select Alert Type</option>
+                            <option value="geofence">Geofence Entry/Exit</option>
+                            <option value="speed">Speeding</option>
+                            <option value="maintenance">Maintenance</option>
+                        </select>
+                        <button class="btn btn-primary" onclick="configureAlert()" aria-label="Configure alert">Configure</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Priority Support Screen -->
+        <div class="screen" id="support" role="main" aria-hidden="true">
+            <div class="header d-flex align-items-center justify-content-between d-none">
+                <button type="button" class="back-btn" data-btn="home" aria-label="Back to Home">←</button>
+                <div class="logo mx-auto text-center">📞 Priority Support</div>
+            </div>
+            <div class="support-section px-3 pb-5" role="list" aria-label="Support features">
                 <div class="feature-card" role="listitem">
                     <div class="feature-header d-flex align-items-center gap-3 mb-3">
-                        <div class="feature-icon" aria-hidden="true">🕒</div>
-                        <div class="feature-title">Journey Replay</div>
+                        <div class="feature-icon" aria-hidden="true">📞</div>
+                        <div class="feature-title">24/7 Support</div>
                     </div>
-                    <div class="feature-desc">Replay past trips with timestamps and stops.</div>
+                    <div class="feature-desc">Contact our team anytime for Pro/Enterprise users.</div>
                 </div>
                 <div class="feature-card" role="listitem">
                     <div class="feature-header d-flex align-items-center gap-3 mb-3">
-                        <div class="feature-icon" aria-hidden="true">📄</div>
-                        <div class="feature-title">Export Reports</div>
+                        <div class="feature-icon" aria-hidden="true">📧</div>
+                        <div class="feature-title">Email Support</div>
                     </div>
-                    <div class="feature-desc">Download trip data in CSV/PDF formats.</div>
+                    <div class="feature-desc">Send queries to support@trackpro.arybit.co.ke.</div>
+                </div>
+                <div class="feature-card" role="listitem">
+                    <div class="feature-header d-flex align-items-center gap-3 mb-3">
+                        <div class="feature-icon" aria-hidden="true">💬</div>
+                        <div class="feature-title">Live Chat</div>
+                    </div>
+                    <div class="feature-desc">Connect instantly with our support team.</div>
+                </div>
+                <div class="text-center mt-4">
+                    <button class="btn btn-primary" onclick="openSupportChat()" aria-label="Start live chat">Start Live Chat</button>
                 </div>
             </div>
         </div>
 
         <!-- Profile Screen -->
         <div class="screen" id="profile" role="main" aria-hidden="true">
-            <div class="header d-flex align-items-center justify-content-between">
-                <button class="back-btn" onclick="showScreen('home')" aria-label="Back to Home">←</button>
+            <div class="header d-flex align-items-center justify-content-between d-none">
+                <button type="button" class="back-btn" data-btn="home" aria-label="Back to Home">←</button>
                 <div class="logo mx-auto text-center">👤 Profile & Settings</div>
             </div>
             <div class="profile-section px-3 pb-5">
@@ -354,6 +561,78 @@
                             <div class="setting-text">Follow on X</div>
                         </div>
                         <div class="setting-arrow" aria-hidden="true">→</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Device Management Screen -->
+        <div class="screen" id="devices" role="main" aria-hidden="true">
+            <div class="header d-flex align-items-center justify-content-between d-none">
+                <button type="button" class="back-btn" data-btn="home" aria-label="Back to Home">←</button>
+                <div class="logo mx-auto text-center">📱 Device Management</div>
+            </div>
+            <div class="devices-section px-3 pb-5" style="position:relative; height:100vh; width:100vw; background:#000;">
+                <!-- Device Quick Actions Grid -->
+                <div class="quick-actions row row-cols-2 row-cols-md-4 g-3 px-3" role="navigation" aria-label="Device Quick Actions">
+                    <div class="col">
+                        <div class="action-card" role="button" tabindex="0" data-device="Queclink GV20" aria-label="Queclink GV20">
+                            <span class="action-icon" aria-hidden="true">🚗</span>
+                            <div class="action-title">Queclink GV20</div>
+                            <div class="action-desc">2G/3G, TCP/UDP, Ignition detection</div>
+                        </div>
+                    </div>
+                    <div class="col">
+                        <div class="action-card" role="button" tabindex="0" data-device="Concox GT06N" aria-label="Concox GT06N">
+                            <span class="action-icon" aria-hidden="true">🚚</span>
+                            <div class="action-title">Concox GT06N</div>
+                            <div class="action-desc">2G, TCP/UDP, Geofencing, SOS</div>
+                        </div>
+                    </div>
+                    <div class="col">
+                        <div class="action-card" role="button" tabindex="0" data-device="Teltonika FMB920" aria-label="Teltonika FMB920">
+                            <span class="action-icon" aria-hidden="true">🚙</span>
+                            <div class="action-title">Teltonika FMB920</div>
+                            <div class="action-desc">2G/4G, TCP/UDP, BLE, Harsh alerts</div>
+                        </div>
+                    </div>
+                    <div class="col">
+                        <div class="action-card" role="button" tabindex="0" data-device="Coban TK303G" aria-label="Coban TK303G">
+                            <span class="action-icon" aria-hidden="true">🚐</span>
+                            <div class="action-title">Coban TK303G</div>
+                            <div class="action-desc">3G, TCP/UDP, Live tracking, SMS</div>
+                        </div>
+                    </div>
+                    <div class="col">
+                        <div class="action-card" role="button" tabindex="0" data-device="Xexun TK102" aria-label="Xexun TK102">
+                            <span class="action-icon" aria-hidden="true">🚕</span>
+                            <div class="action-title">Xexun TK102</div>
+                            <div class="action-desc">2G, TCP/SMS, Global, Simple setup</div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Device Features Scrollable Section -->
+                <div class="devices-feature-scroll">
+                    <div class="feature-card" role="listitem">
+                        <div class="feature-header d-flex align-items-center gap-3 mb-3">
+                            <div class="feature-icon" aria-hidden="true">📱</div>
+                            <div class="feature-title">Register Devices</div>
+                        </div>
+                        <div class="feature-desc">Add GPS devices using IMEI and SIM details.</div>
+                    </div>
+                    <div class="feature-card" role="listitem">
+                        <div class="feature-header d-flex align-items-center gap-3 mb-3">
+                            <div class="feature-icon" aria-hidden="true">⚙️</div>
+                            <div class="feature-title">Device Configuration</div>
+                        </div>
+                        <div class="feature-desc">Update firmware and settings via API.</div>
+                    </div>
+                    <div class="feature-card" role="listitem">
+                        <div class="feature-header d-flex align-items-center gap-3 mb-3">
+                            <div class="feature-icon" aria-hidden="true">🔍</div>
+                            <div class="feature-title">Device Status</div>
+                        </div>
+                        <div class="feature-desc">Monitor device health and connectivity.</div>
                     </div>
                 </div>
             </div>
