@@ -2,10 +2,11 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Visual Mockup Creator - 3D Dashboard Builder</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
   <style>
-    /* CSS Variables for Theming */
+    /* --- CSS Variables for Theming --- */
     :root {
       --primary: #667eea;
       --secondary: #764ba2;
@@ -25,8 +26,12 @@
       --glass-border: rgba(255, 255, 255, 0.2);
       --shadow-3d: 0 20px 40px rgba(0, 0, 0, 0.3);
       --shadow-hover: 0 30px 60px rgba(102, 126, 234, 0.4);
+
+      /* Animation control variable */
+      --animation-speed: 1s; 
     }
 
+    /* --- Base Styles --- */
     * {
       margin: 0;
       padding: 0;
@@ -39,9 +44,10 @@
       color: var(--text-primary);
       min-height: 100vh;
       overflow-x: hidden;
+      perspective: 1000px; /* Needed for global 3D context */
     }
 
-    /* Animated Background */
+    /* --- Animated Background --- */
     body::before {
       content: '';
       position: fixed;
@@ -54,7 +60,7 @@
         radial-gradient(circle at 80% 20%, rgba(250, 112, 154, 0.3) 0%, transparent 50%),
         radial-gradient(circle at 40% 40%, rgba(67, 233, 123, 0.2) 0%, transparent 50%);
       z-index: -1;
-      animation: backgroundShift 20s ease-in-out infinite;
+      animation: backgroundShift calc(var(--animation-speed) * 20) ease-in-out infinite;
     }
 
     @keyframes backgroundShift {
@@ -62,7 +68,7 @@
       50% { opacity: 0.8; }
     }
 
-    /* Header */
+    /* --- Header --- */
     .header {
       padding: 2rem;
       text-align: center;
@@ -70,14 +76,14 @@
     }
 
     .header h1 {
-      font-size: 3rem;
+      font-size: clamp(2rem, 5vw, 3rem); /* Responsive font size */
       font-weight: 800;
       background: linear-gradient(135deg, var(--primary), var(--accent));
       background-clip: text;
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
       margin-bottom: 1rem;
-      animation: titleGlow 3s ease-in-out infinite alternate;
+      animation: titleGlow calc(var(--animation-speed) * 3) ease-in-out infinite alternate;
     }
 
     @keyframes titleGlow {
@@ -86,13 +92,13 @@
     }
 
     .header p {
-      font-size: 1.2rem;
+      font-size: clamp(1rem, 2vw, 1.2rem); /* Responsive font size */
       color: var(--text-secondary);
       max-width: 600px;
       margin: 0 auto;
     }
 
-    /* Control Panel */
+    /* --- Control Panel --- */
     .control-panel {
       display: flex;
       justify-content: center;
@@ -101,19 +107,23 @@
       flex-wrap: wrap;
     }
 
-    .control-btn {
+    .control-btn, .control-input {
       background: var(--glass-bg);
       border: 1px solid var(--glass-border);
       color: var(--text-primary);
       padding: 0.8rem 1.5rem;
       border-radius: 15px;
-      cursor: pointer;
       -webkit-backdrop-filter: blur(20px);
       backdrop-filter: blur(20px);
       transition: all 0.3s ease;
       font-weight: 600;
       position: relative;
       overflow: hidden;
+      font-size: 1rem; /* Standardize font size */
+    }
+
+    .control-btn {
+      cursor: pointer;
     }
 
     .control-btn::before {
@@ -137,12 +147,30 @@
       border-color: var(--primary);
     }
 
-    /* Main Canvas */
+    .control-input {
+      font-size: 1rem; /* Consistent with buttons */
+      text-align: center;
+    }
+
+    .control-input:focus {
+      outline: none;
+      border-color: var(--primary);
+      box-shadow: var(--shadow-hover);
+    }
+
+    .color-input {
+      width: 48px;
+      min-width: 48px; /* Ensure it doesn't shrink too much */
+      padding: 0;
+      cursor: pointer;
+    }
+
+    /* --- Main Canvas --- */
     .canvas-container {
       max-width: 1200px;
       margin: 0 auto;
       padding: 2rem;
-      perspective: 1000px;
+      perspective: 1000px; /* Establishes 3D space */
     }
 
     .mockup-canvas {
@@ -156,11 +184,10 @@
       transform-style: preserve-3d;
       transition: all 0.5s ease;
       box-shadow: var(--shadow-3d);
-      box-shadow: var(--shadow-3d);
     }
 
     .mockup-canvas.rotating {
-      animation: rotate3D 10s linear infinite;
+      animation: rotate3D calc(var(--animation-speed) * 10) linear infinite;
     }
 
     @keyframes rotate3D {
@@ -171,10 +198,10 @@
       100% { transform: rotateY(360deg) rotateX(0deg); }
     }
 
-    /* Dashboard Elements */
+    /* --- Dashboard Elements --- */
     .dashboard-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); /* Slightly larger min-width */
       gap: 2rem;
       margin-bottom: 2rem;
     }
@@ -184,16 +211,16 @@
       border: 1px solid var(--glass-border);
       -webkit-backdrop-filter: blur(20px);
       backdrop-filter: blur(20px);
+      padding: 1.5rem; /* Added padding to cards */
+      border-radius: 15px; /* Consistent border radius */
       position: relative;
       overflow: hidden;
-      transition: all 0.3s ease;
       transform-style: preserve-3d;
       transition: all 0.3s ease;
-      transform-style: preserve-3d;
     }
 
     .dashboard-card:hover {
-      transform: translateZ(20px) rotateX(5deg);
+      transform: translateZ(20px) rotateX(2deg); /* Subtle 3D hover */
       box-shadow: 0 25px 50px rgba(0, 0, 0, 0.3);
     }
 
@@ -232,55 +259,31 @@
       color: var(--text-secondary);
     }
 
-    /* Animated Elements */
+    /* --- Animated Elements --- */
     .pulse-container {
       position: relative;
-      height: 200px;
+      height: 150px; /* Adjusted height */
       margin: 2rem 0;
+      display: flex; /* Use flex for easier centering/distribution */
+      justify-content: space-around;
+      align-items: center;
     }
 
     .pulse-dot {
-      position: absolute;
+      position: relative; /* Changed to relative for flex positioning */
       width: 20px;
       height: 20px;
       border-radius: 50%;
-      animation: pulseAnimation 3s ease-in-out infinite;
+      animation: pulseAnimation calc(var(--animation-speed) * 3) ease-in-out infinite;
     }
 
-    .pulse-dot:nth-child(1) {
-      background: var(--primary);
-      top: 20%;
-      left: 20%;
-      animation-delay: 0s;
-    }
+    /* Specific delays removed for simpler flex distribution, or manually set if needed */
+    .pulse-dot:nth-child(1) { background: var(--primary); animation-delay: 0s; }
+    .pulse-dot:nth-child(2) { background: var(--success); animation-delay: calc(var(--animation-speed) * 1); }
+    .pulse-dot:nth-child(3) { background: var(--danger); animation-delay: calc(var(--animation-speed) * 2); }
+    .pulse-dot:nth-child(4) { background: var(--warning); animation-delay: calc(var(--animation-speed) * 1.5); }
+    .pulse-dot:nth-child(5) { background: var(--accent); animation-delay: calc(var(--animation-speed) * 0.5); }
 
-    .pulse-dot:nth-child(2) {
-      background: var(--success);
-      top: 60%;
-      left: 60%;
-      animation-delay: 1s;
-    }
-
-    .pulse-dot:nth-child(3) {
-      background: var(--danger);
-      top: 40%;
-      left: 80%;
-      animation-delay: 2s;
-    }
-
-    .pulse-dot:nth-child(4) {
-      background: var(--warning);
-      top: 80%;
-      left: 30%;
-      animation-delay: 1.5s;
-    }
-
-    .pulse-dot:nth-child(5) {
-      background: var(--accent);
-      top: 10%;
-      left: 70%;
-      animation-delay: 0.5s;
-    }
 
     @keyframes pulseAnimation {
       0% {
@@ -300,7 +303,7 @@
       }
     }
 
-    /* 3D Floating Elements */
+    /* --- 3D Floating Elements --- */
     .floating-elements {
       position: absolute;
       top: 0;
@@ -308,12 +311,14 @@
       width: 100%;
       height: 100%;
       pointer-events: none;
+      transform-style: preserve-3d; /* Ensure children can be 3D transformed */
     }
 
     .floating-shape {
       position: absolute;
       border-radius: 50%;
-      animation: float 6s ease-in-out infinite;
+      animation: float calc(var(--animation-speed) * 6) ease-in-out infinite;
+      z-index: -1; /* Keep them behind content */
     }
 
     .floating-shape:nth-child(1) {
@@ -323,6 +328,7 @@
       top: 10%;
       left: 10%;
       animation-delay: 0s;
+      transform: translateZ(-50px); /* Push back in 3D space */
     }
 
     .floating-shape:nth-child(2) {
@@ -331,7 +337,8 @@
       background: linear-gradient(135deg, var(--success), transparent);
       top: 70%;
       right: 10%;
-      animation-delay: 2s;
+      animation-delay: calc(var(--animation-speed) * 2);
+      transform: translateZ(-20px);
     }
 
     .floating-shape:nth-child(3) {
@@ -340,30 +347,32 @@
       background: linear-gradient(135deg, var(--danger), transparent);
       bottom: 20%;
       left: 50%;
-      animation-delay: 4s;
+      animation-delay: calc(var(--animation-speed) * 4);
+      transform: translateZ(-80px);
     }
 
     @keyframes float {
       0%, 100% {
-        transform: translateY(0px) rotate(0deg);
+        transform: translateY(0px) rotate(0deg) translateZ(var(--z-offset, 0px)); /* Maintain Z */
         opacity: 0.7;
       }
       50% {
-        transform: translateY(-20px) rotate(180deg);
+        transform: translateY(-20px) rotate(180deg) translateZ(var(--z-offset, 0px));
         opacity: 1;
       }
     }
 
-    /* Progress Bars */
+    /* --- Progress Bars --- */
     .progress-section {
-      margin: 2rem 0;
+      margin: 1.5rem 0; /* Slightly reduced margin */
+      font-size: 0.95rem;
     }
 
     .progress-bar {
       background: rgba(255, 255, 255, 0.1);
       border-radius: 10px;
       height: 8px;
-      margin: 1rem 0;
+      margin: 0.5rem 0 1.2rem; /* Adjusted margins */
       overflow: hidden;
       position: relative;
     }
@@ -372,7 +381,7 @@
       height: 100%;
       border-radius: 10px;
       position: relative;
-      transition: width 2s ease;
+      transition: width calc(var(--animation-speed) * 2) ease;
     }
 
     .progress-fill.primary {
@@ -398,7 +407,7 @@
       width: 100%;
       height: 100%;
       background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
-      animation: shimmer 2s ease-in-out infinite;
+      animation: shimmer calc(var(--animation-speed) * 2) ease-in-out infinite;
     }
 
     @keyframes shimmer {
@@ -406,25 +415,25 @@
       100% { left: 100%; }
     }
 
-    /* Chart Mockup */
+    /* --- Chart Mockup --- */
     .chart-container {
       height: 200px;
       background: var(--glass-bg);
       border-radius: 15px;
-      padding: 1rem;
+      padding: 1.5rem; /* Increased padding */
       position: relative;
       overflow: hidden;
     }
 
     .chart-line {
       position: absolute;
-      bottom: 20px;
+      bottom: 40px; /* Adjusted position */
       left: 20px;
       right: 20px;
       height: 2px;
       background: var(--primary);
       transform-origin: left;
-      animation: drawLine 3s ease-out infinite;
+      animation: drawLine calc(var(--animation-speed) * 3) ease-out infinite alternate; /* Added alternate */
     }
 
     @keyframes drawLine {
@@ -434,56 +443,50 @@
 
     .chart-dots {
       position: absolute;
-      bottom: 10px;
+      bottom: 30px; /* Adjusted position */
       left: 20px;
       right: 20px;
       height: 20px;
+      display: flex;
+      justify-content: space-between; /* Distribute dots evenly */
+      align-items: center;
     }
 
     .chart-dot {
-      position: absolute;
       width: 8px;
       height: 8px;
       background: var(--accent);
       border-radius: 50%;
-      animation: chartPulse 2s ease-in-out infinite;
+      animation: chartPulse calc(var(--animation-speed) * 2) ease-in-out infinite;
     }
 
-    .chart-dot:nth-child(1) { left: 10%; animation-delay: 0s; }
-    .chart-dot:nth-child(2) { left: 30%; animation-delay: 0.5s; }
-    .chart-dot:nth-child(3) { left: 50%; animation-delay: 1s; }
-    .chart-dot:nth-child(4) { left: 70%; animation-delay: 1.5s; }
-    .chart-dot:nth-child(5) { left: 90%; animation-delay: 2s; }
+    .chart-dot:nth-child(1) { animation-delay: 0s; }
+    .chart-dot:nth-child(2) { animation-delay: calc(var(--animation-speed) * 0.5); }
+    .chart-dot:nth-child(3) { animation-delay: calc(var(--animation-speed) * 1); }
+    .chart-dot:nth-child(4) { animation-delay: calc(var(--animation-speed) * 1.5); }
+    .chart-dot:nth-child(5) { animation-delay: calc(var(--animation-speed) * 2); }
 
     @keyframes chartPulse {
       0%, 100% { transform: scale(1); opacity: 0.7; }
       50% { transform: scale(1.5); opacity: 1; }
     }
 
-    /* Responsive Design */
-    @media (max-width: 768px) {
-      .header h1 { font-size: 2rem; }
-      .control-panel { padding: 1rem; }
-      .canvas-container { padding: 1rem; }
-      .mockup-canvas { padding: 1.5rem; }
-      .dashboard-grid { grid-template-columns: 1fr; }
-    }
-
-    /* Status Indicator */
+    /* --- Status Indicator --- */
     .status-indicator {
-      position: fixed;
-      top: 20px;
-      right: 20px;
       background: var(--glass-bg);
       -webkit-backdrop-filter: blur(20px);
       backdrop-filter: blur(20px);
+      padding: 0.5rem 1rem;
+      border-radius: 20px;
       display: flex;
       align-items: center;
       gap: 0.5rem;
       z-index: 1000;
-      align-items: center;
-      gap: 0.5rem;
+      font-size: 0.9rem;
+      color: var(--text-secondary);
       z-index: 1000;
+      font-size: 0.9rem;
+      color: var(--text-secondary);
     }
 
     .status-dot {
@@ -491,55 +494,118 @@
       height: 8px;
       border-radius: 50%;
       background: var(--success);
-      animation: statusPulse 2s ease-in-out infinite;
+      animation: statusPulse calc(var(--animation-speed) * 2) ease-in-out infinite;
     }
 
     @keyframes statusPulse {
-      0%, 100% { opacity: 1; }
-      50% { opacity: 0.5; }
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.5; transform: scale(0.8); }
+    }
+
+    /* --- Generated App Icon Specific Styles --- */
+    .icon-preview img {
+      display: block; /* Remove extra space below image */
+      margin: 1rem auto;
+      border-radius: 15px; /* Match card styling */
+      box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+    }
+
+    .config-output h4 {
+      margin-top: 1.5rem;
+      margin-bottom: 0.8rem;
+      color: var(--primary);
+    }
+
+    .config-output pre {
+      background: rgba(0,0,0,0.2);
+      padding: 1rem;
+      border-radius: 10px;
+      font-size: 0.8rem;
+      white-space: pre-wrap; /* Wrap long lines */
+      word-break: break-all; /* Break words for long lines */
+      max-height: 200px;
+      overflow-y: auto; /* Scroll for long outputs */
+    }
+
+    /* --- Animations for elements being added/removed --- */
+    @keyframes themeFlash {
+      0% { opacity: 0; }
+      50% { opacity: 0.3; }
+      100% { opacity: 0; }
+    }
+    
+    @keyframes slideInRight {
+      from {
+        opacity: 0;
+        transform: translateX(50px) scale(0.9);
+      }
+      to {
+        opacity: 1;
+        transform: translateX(0) scale(1);
+      }
+    }
+    
+    @keyframes slideOutLeft {
+      from {
+        opacity: 1;
+        transform: translateX(0) scale(1);
+      }
+      to {
+        opacity: 0;
+        transform: translateX(-50px) scale(0.9);
+      }
+    }
+
+    /* --- Responsive Design --- */
+    @media (max-width: 768px) {
+      .header h1 { font-size: 2rem; }
+      .header p { font-size: 1rem; }
+      .control-panel { padding: 1rem; }
+      .canvas-container { padding: 1rem; }
+      .mockup-canvas { padding: 1.5rem; min-height: 400px; }
+      .dashboard-grid { grid-template-columns: 1fr; }
+      .control-btn, .control-input { padding: 0.6rem 1rem; font-size: 0.9rem; }
+      .status-indicator { top: 10px; right: 10px; padding: 0.3rem 0.8rem; font-size: 0.8rem; }
     }
   </style>
 </head>
 <body>
-  <!-- Status Indicator -->
   <div class="status-indicator">
     <div class="status-dot"></div>
     <span>Live Preview</span>
   </div>
 
-  <!-- Header -->
-  <div class="header">
+  <header class="header">
     <h1>Visual Mockup Creator</h1>
-    <p>Create stunning 3D dashboards with animated elements and glassmorphism effects</p>
-  </div>
+    <p>Craft stunning 3D dashboards with dynamic elements and mesmerizing glassmorphism effects.</p>
+  </header>
 
-  <!-- Control Panel -->
-  <div class="control-panel">
-    <button class="control-btn" onclick="toggleRotation()">🔄 Toggle 3D Rotation</button>
-    <button class="control-btn" onclick="toggleAnimation()">⚡ Toggle Animations</button>
-    <button class="control-btn" onclick="changeTheme()">🎨 Change Theme</button>
-    <button class="control-btn" onclick="addElement()">➕ Add Element</button>
-    <button class="control-btn" onclick="resetCanvas()">🔄 Reset Canvas</button>
-  </div>
+  <section class="control-panel">
+    <button class="control-btn" onclick="app.toggleRotation()">🔄 Toggle 3D Rotation</button>
+    <button class="control-btn" onclick="app.toggleAnimations()">⚡ Toggle Animations</button>
+    <button class="control-btn" onclick="app.changeTheme()">🌈 Change Theme</button>
+    <button class="control-btn" onclick="app.addElement()">➕ Add Element</button>
+    <button class="control-btn" onclick="app.resetCanvas()">🧹 Reset Canvas</button>
+    <input type="text" id="emojiInput1" placeholder="Emoji 1 (e.g., 📍)" class="control-input" maxlength="2" style="width: 80px;" />
+    <input type="text" id="emojiInput2" placeholder="Emoji 2 (e.g., 🚗)" class="control-input" maxlength="2" style="width: 80px;" />
+    <input type="color" id="bgColorInput" value="#32062e" class="control-input color-input" title="Choose icon background color" />
+    <button class="control-btn" onclick="app.generateAppIcon()">🎨 Generate App Icon</button>
+  </section>
 
-  <!-- Main Canvas -->
-  <div class="canvas-container">
+  <main class="canvas-container">
     <div class="mockup-canvas" id="mockupCanvas">
-      <!-- Floating Elements -->
       <div class="floating-elements">
         <div class="floating-shape"></div>
         <div class="floating-shape"></div>
         <div class="floating-shape"></div>
       </div>
 
-      <!-- Dashboard Grid -->
       <div class="dashboard-grid" id="dashboardGrid">
-        <!-- Analytics Card -->
         <div class="dashboard-card">
           <div class="card-header">
             <div class="card-icon primary">📊</div>
             <div>
-              <div class="card-title">Analytics</div>
+              <div class="card-title">Analytics Dashboard</div>
               <div class="card-subtitle">Real-time data visualization</div>
             </div>
           </div>
@@ -555,38 +621,30 @@
           </div>
         </div>
 
-        <!-- Performance Card -->
         <div class="dashboard-card">
           <div class="card-header">
             <div class="card-icon success">⚡</div>
             <div>
-              <div class="card-title">Performance</div>
-              <div class="card-subtitle">System metrics</div>
+              <div class="card-title">System Performance</div>
+              <div class="card-subtitle">Monitor crucial system metrics</div>
             </div>
           </div>
           <div class="progress-section">
             <div>CPU Usage</div>
-            <div class="progress-bar">
-              <div class="progress-fill primary"></div>
-            </div>
+            <div class="progress-bar"><div class="progress-fill primary"></div></div>
             <div>Memory</div>
-            <div class="progress-bar">
-              <div class="progress-fill success"></div>
-            </div>
+            <div class="progress-bar"><div class="progress-fill success"></div></div>
             <div>Storage</div>
-            <div class="progress-bar">
-              <div class="progress-fill danger"></div>
-            </div>
+            <div class="progress-bar"><div class="progress-fill danger"></div></div>
           </div>
         </div>
 
-        <!-- Activity Card -->
         <div class="dashboard-card">
           <div class="card-header">
             <div class="card-icon danger">🚀</div>
             <div>
-              <div class="card-title">Activity</div>
-              <div class="card-subtitle">Live monitoring</div>
+              <div class="card-title">Live Activity Feed</div>
+              <div class="card-subtitle">Track user interactions in real-time</div>
             </div>
           </div>
           <div class="pulse-container">
@@ -599,221 +657,292 @@
         </div>
       </div>
     </div>
-  </div>
+  </main>
 
   <script>
-    // Global variables
-    let isRotating = false;
-    let animationsEnabled = true;
-    let currentTheme = 0;
-    let elementCount = 3;
+    const app = {
+      isRotating: false,
+      animationsEnabled: true,
+      currentThemeIndex: 0,
+      elementCount: 3,
 
-    // Theme configurations
-    const themes = [
-      {
-        name: 'Cyberpunk',
-        primary: '#667eea',
-        secondary: '#764ba2',
-        accent: '#f093fb',
-        success: '#4facfe',
-        warning: '#43e97b',
-        danger: '#fa709a'
+      themes: [
+        {
+          name: 'Cyberpunk',
+          primary: '#667eea',
+          secondary: '#764ba2',
+          accent: '#f093fb',
+          success: '#4facfe',
+          warning: '#43e97b',
+          danger: '#fa709a',
+          bgPrimary: '#0f0f23',
+          bgSecondary: '#1a1a2e'
+        },
+        {
+          name: 'Ocean',
+          primary: '#0066cc',
+          secondary: '#0052a3',
+          accent: '#66b3ff',
+          success: '#00cc99',
+          warning: '#ffcc00',
+          danger: '#ff6666',
+          bgPrimary: '#0A1128',
+          bgSecondary: '#001F54'
+        },
+        {
+          name: 'Sunset',
+          primary: '#ff6b35',
+          secondary: '#f7931e',
+          accent: '#ffb347',
+          success: '#32cd32',
+          warning: '#ffd700',
+          danger: '#ff4757',
+          bgPrimary: '#2E001F',
+          bgSecondary: '#5A003E'
+        },
+        {
+          name: 'Forest',
+          primary: '#2d5a27',
+          secondary: '#40826d',
+          accent: '#95d5b2',
+          success: '#52b788',
+          warning: '#f9c74f',
+          danger: '#f8961e',
+          bgPrimary: '#1E3F20',
+          bgSecondary: '#3C6E71'
+        }
+      ],
+
+      /**
+       * Toggles the 3D rotation animation on the mockup canvas.
+       */
+      toggleRotation() {
+        const canvas = document.getElementById('mockupCanvas');
+        this.isRotating = !this.isRotating;
+        canvas.classList.toggle('rotating', this.isRotating);
       },
-      {
-        name: 'Ocean',
-        primary: '#0066cc',
-        secondary: '#0052a3',
-        accent: '#66b3ff',
-        success: '#00cc99',
-        warning: '#ffcc00',
-        danger: '#ff6666'
+
+      /**
+       * Toggles all CSS animations by adjusting the --animation-speed variable.
+       */
+      toggleAnimations() {
+        this.animationsEnabled = !this.animationsEnabled;
+        document.documentElement.style.setProperty('--animation-speed', this.animationsEnabled ? '1s' : '0s');
+        alert(`Animations are now ${this.animationsEnabled ? 'enabled' : 'disabled'}.`);
       },
-      {
-        name: 'Sunset',
-        primary: '#ff6b35',
-        secondary: '#f7931e',
-        accent: '#ffb347',
-        success: '#32cd32',
-        warning: '#ffd700',
-        danger: '#ff4757'
-      },
-      {
-        name: 'Forest',
-        primary: '#2d5a27',
-        secondary: '#40826d',
-        accent: '#95d5b2',
-        success: '#52b788',
-        warning: '#f9c74f',
-        danger: '#f8961e'
-      }
-    ];
 
-    // Toggle 3D rotation
-    function toggleRotation() {
-      const canvas = document.getElementById('mockupCanvas');
-      isRotating = !isRotating;
-      
-      if (isRotating) {
-        canvas.classList.add('rotating');
-      } else {
-        canvas.classList.remove('rotating');
-      }
-    }
-
-    // Toggle animations
-    function toggleAnimation() {
-      animationsEnabled = !animationsEnabled;
-      const root = document.documentElement;
-      
-      if (animationsEnabled) {
-        root.style.setProperty('--animation-duration', '3s');
-      } else {
-        root.style.setProperty('--animation-duration', '0s');
-      }
-    }
-
-    // Change theme
-    function changeTheme() {
-      currentTheme = (currentTheme + 1) % themes.length;
-      const theme = themes[currentTheme];
-      const root = document.documentElement;
-      
-      root.style.setProperty('--primary', theme.primary);
-      root.style.setProperty('--secondary', theme.secondary);
-      root.style.setProperty('--accent', theme.accent);
-      root.style.setProperty('--success', theme.success);
-      root.style.setProperty('--warning', theme.warning);
-      root.style.setProperty('--danger', theme.danger);
-      
-      // Create theme change effect
-      const effect = document.createElement('div');
-      effect.style.cssText = `
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background: linear-gradient(45deg, ${theme.primary}, ${theme.accent});
-        opacity: 0.3;
-        z-index: 9999;
-        pointer-events: none;
-        animation: themeFlash 0.5s ease-out;
-      `;
-      
-      document.body.appendChild(effect);
-      setTimeout(() => effect.remove(), 500);
-    }
-
-    // Add new element
-    function addElement() {
-      elementCount++;
-      const grid = document.getElementById('dashboardGrid');
-      const newCard = document.createElement('div');
-      newCard.className = 'dashboard-card';
-      newCard.style.animation = 'slideInRight 0.5s ease-out';
-      
-      const icons = ['🔥', '💎', '🌟', '⭐', '🚀', '💫', '🎯', '📈'];
-      const titles = ['Metrics', 'Insights', 'Reports', 'Trends', 'Goals', 'Stats', 'Growth', 'Analysis'];
-      const subtitles = ['Dynamic data', 'Smart analytics', 'Live reports', 'Trend analysis', 'Goal tracking', 'Statistics', 'Growth metrics', 'Data insights'];
-      
-      const randomIndex = Math.floor(Math.random() * icons.length);
-      
-      newCard.innerHTML = `
-        <div class="card-header">
-          <div class="card-icon primary">${icons[randomIndex]}</div>
-          <div>
-            <div class="card-title">${titles[randomIndex]} ${elementCount}</div>
-            <div class="card-subtitle">${subtitles[randomIndex]}</div>
-          </div>
-        </div>
-        <div class="pulse-container">
-          <div class="pulse-dot"></div>
-          <div class="pulse-dot"></div>
-          <div class="pulse-dot"></div>
-        </div>
-      `;
-      
-      grid.appendChild(newCard);
-    }
-
-    // Reset canvas
-    function resetCanvas() {
-      const grid = document.getElementById('dashboardGrid');
-      const cards = grid.querySelectorAll('.dashboard-card');
-      
-      // Remove extra cards (keep first 3)
-      for (let i = 3; i < cards.length; i++) {
-        cards[i].style.animation = 'slideOutLeft 0.5s ease-out';
-        setTimeout(() => cards[i].remove(), 500);
-      }
-      
-      elementCount = 3;
-      
-      // Reset rotation
-      if (isRotating) {
-        toggleRotation();
-      }
-      
-      // Reset theme
-      currentTheme = 0;
-      changeTheme();
-    }
-
-    // Add theme flash animation
-    const style = document.createElement('style');
-    style.textContent = `
-      @keyframes themeFlash {
-        0% { opacity: 0; }
-        50% { opacity: 0.3; }
-        100% { opacity: 0; }
-      }
-      
-      @keyframes slideInRight {
-        from {
-          opacity: 0;
-          transform: translateX(50px);
-        }
-        to {
-          opacity: 1;
-          transform: translateX(0);
-        }
-      }
-      
-      @keyframes slideOutLeft {
-        from {
-          opacity: 1;
-          transform: translateX(0);
-        }
-        to {
-          opacity: 0;
-          transform: translateX(-50px);
-        }
-      }
-    `;
-    document.head.appendChild(style);
-
-    // Initialize with some visual effects
-    document.addEventListener('DOMContentLoaded', function() {
-      // Add initial animation to cards
-      const cards = document.querySelectorAll('.dashboard-card');
-      cards.forEach((card, index) => {
-        card.style.animation = `slideInRight 0.6s ease-out ${index * 0.2}s both`;
-      });
-      
-      // Add mouse movement parallax effect
-      document.addEventListener('mousemove', function(e) {
-        const shapes = document.querySelectorAll('.floating-shape');
-        const mouseX = e.clientX / window.innerWidth;
-        const mouseY = e.clientY / window.innerHeight;
+      /**
+       * Cycles through predefined themes and applies their colors to CSS variables.
+       */
+      changeTheme() {
+        this.currentThemeIndex = (this.currentThemeIndex + 1) % this.themes.length;
+        const theme = this.themes[this.currentThemeIndex];
+        const root = document.documentElement;
         
-        shapes.forEach((shape, index) => {
-          const speed = (index + 1) * 0.5;
-          const x = (mouseX - 0.5) * speed * 20;
-          const y = (mouseY - 0.5) * speed * 20;
-          shape.style.transform = `translate(${x}px, ${y}px)`;
+        for (const [key, value] of Object.entries(theme)) {
+          if (key !== 'name') { // Skip theme name
+            root.style.setProperty(`--${key.replace(/([A-Z])/g, '-$1').toLowerCase()}`, value);
+          }
+        }
+        
+        // Add a visual "flash" effect for theme change
+        const effect = document.createElement('div');
+        effect.style.cssText = `
+          position: fixed;
+          top: 0;
+          left: 0;
+          width: 100%;
+          height: 100%;
+          background: linear-gradient(45deg, ${theme.primary}, ${theme.accent});
+          opacity: 0.3;
+          z-index: 9999;
+          pointer-events: none;
+          animation: themeFlash 0.5s ease-out;
+        `;
+        document.body.appendChild(effect);
+        setTimeout(() => effect.remove(), 500);
+      },
+
+      /**
+       * Adds a new dynamic dashboard card to the grid.
+       */
+      addElement() {
+        this.elementCount++;
+        const grid = document.getElementById('dashboardGrid');
+        const newCard = document.createElement('div');
+        newCard.className = 'dashboard-card';
+        newCard.style.animation = 'slideInRight 0.5s ease-out';
+        
+        const icons = ['🔥', '💎', '🌟', '⭐', '📈', '💡', '💬', '🔗'];
+        const titles = ['New Widget', 'Data Stream', 'Quick Report', 'Key Insights', 'Performance Metric', 'Info Card', 'Notifications', 'Connections'];
+        const subtitles = ['Dynamic content', 'Live updates', 'Generated on demand', 'Interactive view', 'Real-time statistics', 'Contextual info', 'Instant alerts', 'Linked entities'];
+        
+        const randomIndex = Math.floor(Math.random() * icons.length);
+        
+        newCard.innerHTML = `
+          <div class="card-header">
+            <div class="card-icon primary">${icons[randomIndex]}</div>
+            <div>
+              <div class="card-title">${titles[randomIndex]} ${this.elementCount}</div>
+              <div class="card-subtitle">${subtitles[randomIndex]}</div>
+            </div>
+          </div>
+          <div class="pulse-container">
+            <div class="pulse-dot"></div>
+            <div class="pulse-dot"></div>
+            <div class="pulse-dot"></div>
+          </div>
+        `;
+        
+        grid.appendChild(newCard);
+      },
+
+      /**
+       * Resets the canvas to its initial state, removing added elements and resetting rotation/theme.
+       */
+      resetCanvas() {
+        const grid = document.getElementById('dashboardGrid');
+        const cards = grid.querySelectorAll('.dashboard-card');
+        
+        // Animate out and remove extra cards (keep initial 3)
+        for (let i = 3; i < cards.length; i++) {
+          cards[i].style.animation = 'slideOutLeft 0.5s ease-out';
+          setTimeout(() => cards[i].remove(), 500);
+        }
+        
+        this.elementCount = 3;
+        
+        // Reset rotation if active
+        if (this.isRotating) {
+          this.toggleRotation();
+        }
+        
+        // Reset theme to default (Cyberpunk)
+        this.currentThemeIndex = 0;
+        this.changeTheme(); // Apply the Cyberpunk theme
+      },
+
+      /**
+       * Generates a dynamic app icon based on user input emojis and background color.
+       * Simulates file generation and displays configuration snippets.
+       */
+      generateAppIcon() {
+        const emoji1 = document.getElementById('emojiInput1').value || '📍';
+        const emoji2 = document.getElementById('emojiInput2').value || '🚗';
+        const bgColor = document.getElementById('bgColorInput').value || '#32062e';
+
+        // SVG content for the icon
+        const svgContent = `
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+            <rect width="100" height="100" fill="${bgColor}" rx="20"/>
+            <text x="50%" y="38%" text-anchor="middle" fill="#fff" font-size="28" font-family="Segoe UI, Noto Color Emoji, Apple Color Emoji, sans-serif">${emoji1}</text>
+            <text x="50%" y="72%" text-anchor="middle" fill="#fff" font-size="36" font-family="Segoe UI, Noto Color Emoji, Apple Color Emoji, sans-serif">${emoji2}</text>
+          </svg>
+        `.trim();
+
+        // Simulated icon sizes and paths for various platforms
+        const iconSizes = [
+          { size: '16x16', name: 'favicon-16x16.png', type: 'favicon' },
+          { size: '32x32', name: 'favicon-32x32.png', type: 'favicon' },
+          { size: '180x180', name: 'apple-touch-icon.png', type: 'favicon' },
+          { size: '192x192', name: 'icon-192.png', type: 'pwa' },
+          { size: '512x512', name: 'icon-512.png', type: 'pwa' },
+          { size: '48x48', name: 'icon-mdpi.png', type: 'cordova' },
+          { size: '72x72', name: 'icon-hdpi.png', type: 'cordova' },
+          { size: '96x96', name: 'icon-xhdpi.png', type: 'cordova' },
+          { size: '144x144', name: 'icon-xxhdpi.png', type: 'cordova' },
+          { size: '192x192', name: 'icon-xxxhdpi.png', type: 'cordova' }
+        ];
+        const generatedFiles = iconSizes.map(({ name, size, type }) => ({
+          name, size, type, path: `/icons/${name}`
+        }));
+
+        // Simulated Web Manifest content
+        const manifest = {
+          name: 'Visual Mockup Creator',
+          short_name: 'Mockup Creator',
+          icons: generatedFiles.filter(f => f.type === 'pwa').map(f => ({
+            src: f.path, sizes: f.size, type: 'image/png'
+          })),
+          theme_color: bgColor,
+          background_color: '#f8f9fa',
+          display: 'standalone',
+          start_url: '/',
+          scope: '/'
+        };
+
+        // Simulated Cordova config.xml snippet
+        const cordovaConfig = `
+<platform name="android">
+  ${generatedFiles.filter(f => f.type === 'cordova').map(f =>
+    `<icon src="${f.path}" density="${f.name.split('-')[1].split('.')[0]}" />`).join('\n  ')}
+</platform>
+        `.trim();
+
+        // Create a new dashboard card to display the generated icon and code snippets
+        const grid = document.getElementById('dashboardGrid');
+        const newCard = document.createElement('div');
+        newCard.className = 'dashboard-card';
+        newCard.style.animation = 'slideInRight 0.5s ease-out';
+        newCard.innerHTML = `
+          <div class="card-header">
+            <div class="card-icon primary">${emoji1}${emoji2}</div>
+            <div>
+              <div class="card-title">Generated App Icon</div>
+              <div class="card-subtitle">Emojis: ${emoji1} ${emoji2}, Color: ${bgColor}</div>
+            </div>
+          </div>
+          <div class="icon-preview">
+            <img src="data:image/svg+xml;base64,${btoa(svgContent)}" style="width:100px;height:100px;" alt="App Icon Preview"/>
+          </div>
+          <div class="config-output">
+            <h4>manifest.webmanifest</h4>
+            <pre>${JSON.stringify(manifest, null, 2)}</pre>
+            <h4>Cordova config.xml</h4>
+            <pre>${cordovaConfig}</pre>
+          </div>
+        `;
+
+        const downloadBtn = document.createElement('button');
+        downloadBtn.className = 'control-btn';
+        downloadBtn.innerText = '📥 Download Icon Pack (Simulated)';
+        downloadBtn.onclick = () => {
+          // In a real application, this would trigger a ZIP download
+          alert('Simulating download of icon pack.\n\nA real download would include PNG files for various sizes, manifest.webmanifest, and config.xml.');
+        };
+        newCard.appendChild(downloadBtn);
+        grid.appendChild(newCard);
+      },
+
+      /**
+       * Initializes the application with animations and event listeners.
+       */
+      init() {
+        // Initial animation for existing cards
+        document.querySelectorAll('.dashboard-card').forEach((card, index) => {
+          card.style.animation = `slideInRight 0.6s ease-out ${index * 0.2}s both`;
         });
-      });
-    });
+        
+        // Mouse movement parallax effect for floating shapes
+        document.addEventListener('mousemove', (e) => {
+          const shapes = document.querySelectorAll('.floating-shape');
+          const mouseX = e.clientX / window.innerWidth;
+          const mouseY = e.clientY / window.innerHeight;
+          
+          shapes.forEach((shape, index) => {
+            // Adjust speed based on index to create depth
+            const speed = (index + 1) * 0.8; 
+            const x = (mouseX - 0.5) * speed * 40; // Increased parallax effect
+            const y = (mouseY - 0.5) * speed * 40;
+            // Also add a Z translation for more pronounced 3D effect
+            shape.style.transform = `translate(${x}px, ${y}px) translateZ(${(-100 + index * 20)}px)`; 
+          });
+        });
+      }
+    };
+
+    // Initialize the application
+    document.addEventListener('DOMContentLoaded', () => app.init());
   </script>
 </body>
 </html>

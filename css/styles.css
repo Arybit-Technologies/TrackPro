@@ -885,3 +885,71 @@ html {
     box-shadow: var(--shadow-hover);
     border-color: var(--bs-primary);
 }
+
+/* === Accessibility Improvements === */
+
+/* Focus styles for interactive cards and navigation */
+.action-card:focus-visible,
+.feature-card:focus-visible,
+.step-card:focus-visible,
+.setup-card:focus-visible,
+.integration-card:focus-visible,
+.api-section:focus-visible,
+.troubleshooting-list li:focus-visible,
+.resources-list li:focus-visible,
+.pricing-card:focus-visible,
+.faq-item:focus-visible,
+.nav-item:focus-visible,
+.setting-item:focus-visible {
+    outline: 2px solid var(--bs-primary);
+    outline-offset: 2px;
+    z-index: 2;
+}
+
+/* Ensure sufficient color contrast for focus */
+.action-card:focus-visible,
+.feature-card:focus-visible,
+.step-card:focus-visible,
+.setup-card:focus-visible,
+.integration-card:focus-visible,
+.api-section:focus-visible,
+.troubleshooting-list li:focus-visible,
+.resources-list li:focus-visible,
+.pricing-card:focus-visible,
+.faq-item:focus-visible {
+    box-shadow: 0 0 0 4px rgba(50, 6, 46, 0.15);
+}
+
+/* Visually hide elements but keep them accessible to screen readers */
+.sr-only {
+    position: absolute !important;
+    width: 1px !important;
+    height: 1px !important;
+    padding: 0 !important;
+    margin: -1px !important;
+    overflow: hidden !important;
+    clip: rect(0, 0, 0, 0) !important;
+    border: 0 !important;
+}
+
+/* Ensure sufficient contrast for badges and status indicators */
+.badge,
+[role="status"] {
+    color: #222;
+    background: #f1f1f1;
+}
+
+.badge.bg-primary,
+.badge.bg-secondary {
+    color: #fff !important;
+}
+
+/* Improve focus for buttons and links */
+a:focus-visible,
+button:focus-visible,
+[role="button"]:focus-visible {
+    outline: 2px solid var(--bs-primary);
+    outline-offset: 2px;
+    box-shadow: 0 0 0 4px rgba(50, 6, 46, 0.15);
+    z-index: 2;
+}

@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "278817621357",
+    "project_id": "trackpro-73bac",
+    "storage_bucket": "trackpro-73bac.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:278817621357:android:9859afb27ad6a14ae1c664",
+        "android_client_info": {
+          "package_name": "com.arybit.trackPro"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAsVjKE_UYLTXqEZpjku3911kX6hY37WCk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

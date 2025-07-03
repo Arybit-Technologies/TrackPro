@@ -69,31 +69,50 @@
             JavaScript is required to use TrackPro. Please enable it in your browser settings.
         </div>
     </noscript>
+    
+    <header role="banner" id="header">
+      <nav class="navbar navbar-expand-lg navbar-dark fixed-top" id="navbar">
+        <div class="container nav-container">
+            <a class="navbar-brand logo" href="../../trackPro-app/www/" title="Go to TrackPro Dashboard">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="32" height="32" style="vertical-align: middle;">
+                    <rect width="100" height="100" rx="20" fill="#32062e"/>
+                    <text x="50%" y="38%" text-anchor="middle" font-size="28">📍</text>
+                    <text x="50%" y="72%" text-anchor="middle" font-size="36">🚗</text>
+                </svg>
+                <span style="margin-left: 8px;">TrackPro</span>
+            </a>
+            <button class="navbar-toggler d-lg-none" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto nav-menu">
+                    <li class="nav-item"><a class="nav-link" href="../../TrackPro/">Home</a></li>
+                    <li class="nav-item"><a class="nav-link" href="../../trackPro-features.html">Features</a></li>
+                    <li class="nav-item"><a class="nav-link" href="../../trackPro-how-it-works.html">How It Works</a></li>
+                    <li class="nav-item"><a class="nav-link" href="../../trackPro-device-docs.html">Device Docs</a></li>
+                    <li class="nav-item"><a class="nav-link" href="../../trackPro-integration-and-docs.html">Integration & Docs</a></li>
+                    <li class="nav-item"><a class="nav-link" href="../../trackPro-pricing.html">Pricing</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#" id="toggleThemeBtn"><i class="fas fa-moon"></i> Dark Mode</a></li>
+                </ul>
+            </div>
+        </div>
+      </nav>
+      <!-- Status Bar -->
+      <div class="status-bar d-flex justify-content-between align-items-center" role="status">
+          <span id="connection-status" aria-label="Connection status">🟢 Online</span>
+          <span id="location-status" aria-label="Location status">📍 GPS Ready</span>
+          <span id="time-display" aria-label="Current time"></span>
+      </div>
+    </header>
+
     <div class="loading" id="loading" role="alert" aria-live="assertive">
         <div class="spinner" aria-hidden="true"></div>
         <p class="sr-only">Loading TrackPro...</p>
     </div>
-    <div class="container-fluid p-0">
-        <!-- Status Bar -->
-        <div class="status-bar d-flex justify-content-between align-items-center" role="status">
-            <span id="connection-status" aria-label="Connection status">🟢 Online</span>
-            <span id="location-status" aria-label="Location status">📍 GPS Ready</span>
-            <span id="time-display" aria-label="Current time"></span>
-        </div>
+    <div class="container-fluid p-0">       
 
         <!-- Home Screen -->
         <div class="screen active" id="home" role="main">
-            <div class="header">
-                <div class="logo" aria-label="TrackPro logo">
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="32" height="32" style="vertical-align: middle;">
-                        <rect width="100" height="100" rx="20" fill="#32062e"/>
-                        <text x="50%" y="38%" text-anchor="middle" font-size="28">📍</text>
-                        <text x="50%" y="72%" text-anchor="middle" font-size="36">🚗</text>
-                    </svg>
-                    <span style="margin-left: 8px;">TrackPro</span>
-                </div>
-                <div class="tagline">Your Fleet Management Solution</div>
-            </div>
             <div class="hero-section mx-md-5 mb-3">
                 <h1 class="hero-title">Track. Optimize.<br>Manage.</h1>
                 <p class="hero-subtitle">Real-time GPS tracking, analytics, and fleet optimization</p>

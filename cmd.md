@@ -1,5 +1,5 @@
-cordova create trackPro-application com.arybit.trackPro Track Pro
-cd trackPro-application
+cordova create trackPro-app com.arybit.trackPro TrackPro
+cd trackPro-app
 keytool -v -genkey -keystore my-release-key.keystore -dname "cn=TrackPro, ou=trackpro, o=Nairobi, c=KE" -alias arybit -keypass Arybit@2021 -keyalg RSA -validity 10000  -storepass Arybit@2021
 keytool -list -keystore my-release-key.keystore -storepass Arybit@2021
 keytool -export -rfc -keystore my-release-key.keystore -alias arybit  -storepass Arybit@2021 -file upload_certificate.pem
