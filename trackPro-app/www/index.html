@@ -484,30 +484,36 @@
                 <button type="button" class="back-btn" data-btn="home" aria-label="Back to Home">←</button>
                 <div class="logo mx-auto text-center">📞 Priority Support</div>
             </div>
-            <div class="support-section px-3 pb-5" role="list" aria-label="Support features">
-                <div class="feature-card" role="listitem">
-                    <div class="feature-header d-flex align-items-center gap-3 mb-3">
-                        <div class="feature-icon" aria-hidden="true">📞</div>
-                        <div class="feature-title">24/7 Support</div>
+            <div class="support-section" style="padding:0 !important; margin:0 !important; height:100vh; width:100vw; position:fixed; top:0; left:0; z-index:1; background:#000;">
+                <!-- Priority Support Feature Cards Scrollable Section -->
+                <div class="support-feature-scroll" style="position:absolute; bottom:0; left:0; width:100vw; max-width:100vw; z-index:10; background:linear-gradient(0deg,rgba(32,32,32,0.96) 80%,rgba(32,32,32,0.7) 100%,transparent 100%); padding:18px 10px 90px 10px; box-sizing:border-box; overflow-x:auto; overflow-y:auto; display:flex; flex-direction:row; gap:16px;">
+                    <div class="feature-card" role="listitem">
+                        <div class="feature-header d-flex align-items-center gap-3 mb-3">
+                            <div class="feature-icon" aria-hidden="true">📞</div>
+                            <div class="feature-title">24/7 Support</div>
+                        </div>
+                        <div class="feature-desc">Contact our team anytime for Pro/Enterprise users.</div>
                     </div>
-                    <div class="feature-desc">Contact our team anytime for Pro/Enterprise users.</div>
-                </div>
-                <div class="feature-card" role="listitem">
-                    <div class="feature-header d-flex align-items-center gap-3 mb-3">
-                        <div class="feature-icon" aria-hidden="true">📧</div>
-                        <div class="feature-title">Email Support</div>
+                    <div class="feature-card" role="listitem">
+                        <div class="feature-header d-flex align-items-center gap-3 mb-3">
+                            <div class="feature-icon" aria-hidden="true">📧</div>
+                            <div class="feature-title">Email Support</div>
+                        </div>
+                        <div class="feature-desc">Send queries to support@trackpro.arybit.co.ke.</div>
                     </div>
-                    <div class="feature-desc">Send queries to support@trackpro.arybit.co.ke.</div>
-                </div>
-                <div class="feature-card" role="listitem">
-                    <div class="feature-header d-flex align-items-center gap-3 mb-3">
-                        <div class="feature-icon" aria-hidden="true">💬</div>
-                        <div class="feature-title">Live Chat</div>
+                    <div class="feature-card" role="listitem">
+                        <div class="feature-header d-flex align-items-center gap-3 mb-3">
+                            <div class="feature-icon" aria-hidden="true">💬</div>
+                            <div class="feature-title">Live Chat</div>
+                        </div>
+                        <div class="feature-desc">Connect instantly with our support team.</div>
                     </div>
-                    <div class="feature-desc">Connect instantly with our support team.</div>
                 </div>
-                <div class="text-center mt-4">
-                    <button class="btn btn-primary" onclick="openSupportChat()" aria-label="Start live chat">Start Live Chat</button>
+                <!-- Support Action Widget (optional, floating at the top) -->
+                <div class="support-action-widget" style="position:absolute;top:24px;left:50%;transform:translateX(-50%);z-index:20;max-width:400px;width:95vw;background:rgba(50,6,46,0.92);border-radius:18px;box-shadow:0 8px 32px rgba(0,0,0,0.25);padding:18px 14px 14px 14px;">
+                    <div class="text-center">
+                        <button class="btn btn-primary" onclick="openSupportChat()" aria-label="Start live chat">Start Live Chat</button>
+                    </div>
                 </div>
             </div>
         </div>

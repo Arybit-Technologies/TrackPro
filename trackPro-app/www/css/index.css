@@ -714,6 +714,77 @@ a:focus {
     }
 }
 
+/* --- Priority Support Fullscreen & Feature Scroll --- */
+#support .support-section {
+    padding: 0 !important;
+    margin: 0 !important;
+    height: 100vh;
+    min-height: 100vh;
+    width: 100vw;
+    max-width: 100vw;
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 1;
+    background: #000;
+    display: flex;
+    flex-direction: column;
+}
+.support-feature-scroll {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100vw;
+    max-width: 100vw;
+    z-index: 10;
+    background: linear-gradient(0deg, rgba(32,32,32,0.96) 80%, rgba(32,32,32,0.7) 100%, transparent 100%);
+    padding: 18px 10px 90px 10px;
+    box-sizing: border-box;
+    overflow-x: auto;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: row;
+    gap: 16px;
+    scrollbar-width: thin;
+    scrollbar-color: #ff6b9d #222;
+}
+.support-feature-scroll .feature-card {
+    min-width: 260px;
+    max-width: 320px;
+    flex: 0 0 auto;
+    margin: 0;
+    box-shadow: 0 2px 12px rgba(50,6,46,0.10);
+}
+.support-action-widget {
+    position: absolute;
+    top: 24px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 20;
+    max-width: 400px;
+    width: 95vw;
+    background: rgba(50,6,46,0.92);
+    border-radius: 18px;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.25);
+    padding: 18px 14px 14px 14px;
+}
+@media (max-width: 600px) {
+    .support-feature-scroll {
+        padding: 10px 4px 70px 4px;
+        gap: 10px;
+    }
+    .support-feature-scroll .feature-card {
+        min-width: 80vw;
+        max-width: 90vw;
+    }
+    .support-action-widget {
+        max-width: 98vw !important;
+        left: 1vw !important;
+        right: 1vw !important;
+        transform: none !important;
+    }
+}
+
 /* === Accessibility: Screen Reader Only === */
 .sr-only {
     position: absolute;
@@ -909,5 +980,1421 @@ a:focus {
     .ai-route-feature-scroll .feature-card {
         min-width: 80vw;
         max-width: 90vw;
+    }
+}
+
+/* --- Priority Support Fullscreen & Feature Scroll --- */
+#support .support-section {
+    padding: 0 !important;
+    margin: 0 !important;
+    height: 100vh;
+    min-height: 100vh;
+    width: 100vw;
+    max-width: 100vw;
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 1;
+    background: #000;
+    display: flex;
+    flex-direction: column;
+}
+.support-feature-scroll {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100vw;
+    max-width: 100vw;
+    z-index: 10;
+    background: linear-gradient(0deg, rgba(32,32,32,0.96) 80%, rgba(32,32,32,0.7) 100%, transparent 100%);
+    padding: 18px 10px 90px 10px;
+    box-sizing: border-box;
+    overflow-x: auto;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: row;
+    gap: 16px;
+    scrollbar-width: thin;
+    scrollbar-color: #ff6b9d #222;
+}
+.support-feature-scroll .feature-card {
+    min-width: 260px;
+    max-width: 320px;
+    flex: 0 0 auto;
+    margin: 0;
+    box-shadow: 0 2px 12px rgba(50,6,46,0.10);
+}
+.support-action-widget {
+    position: absolute;
+    top: 24px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 20;
+    max-width: 400px;
+    width: 95vw;
+    background: rgba(50,6,46,0.92);
+    border-radius: 18px;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.25);
+    padding: 18px 14px 14px 14px;
+}
+@media (max-width: 600px) {
+    .support-feature-scroll {
+        padding: 10px 4px 70px 4px;
+        gap: 10px;
+    }
+    .support-feature-scroll .feature-card {
+        min-width: 80vw;
+        max-width: 90vw;
+    }
+    .support-action-widget {
+        max-width: 98vw !important;
+        left: 1vw !important;
+        right: 1vw !important;
+        transform: none !important;
+    }
+}
+
+/* === Accessibility: Screen Reader Only === */
+.sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    border: 0;
+}
+
+/* === Reduced Motion === */
+@media (prefers-reduced-motion: reduce) {
+    .card::before,
+    .feature-icon::after,
+    .spinner {
+        animation: none;
+        transition: none;
+    }
+}
+
+/* === Responsive Adjustments === */
+@media (max-width: 768px) {
+    .hero-title {
+        font-size: 2rem;
+    }
+
+    .hero-subtitle {
+        font-size: 1rem;
+    }
+
+    .action-card {
+        padding: 0.75rem;
+    }
+
+    .action-title {
+        font-size: 1rem;
+    }
+
+    .action-desc {
+        font-size: 0.8rem;
+    }
+}
+
+@media (max-width: 576px) {
+    .card {
+        padding: 1rem;
+    }
+
+    .feature-title {
+        font-size: 1rem;
+    }
+}
+
+/* Make geofence-map full screen */
+#geofencing .geofencing-section {
+    padding: 0 !important;
+    margin: 0 !important;
+    height: 100vh;
+    min-height: 100vh;
+    width: 100vw;
+    max-width: 100vw;
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 1;
+    background: #000;
+    display: flex;
+    flex-direction: column;
+}
+
+#geofence-map {
+    width: 100vw !important;
+    height: 100vh !important;
+    min-width: 0;
+    min-height: 0;
+    position: relative;
+    z-index: 2;
+    border-radius: 0 !important;
+    margin: 0 !important;
+    box-shadow: none !important;
+    background: #000;
+}
+
+/* Scrollable feature cards overlay for geofencing */
+.geofence-feature-scroll {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100vw;
+    max-width: 100vw;
+    z-index: 10;
+    background: linear-gradient(0deg, rgba(32,32,32,0.96) 80%, rgba(32,32,32,0.7) 100%, transparent 100%);
+    padding: 18px 10px 90px 10px; /* bottom padding for nav */
+    box-sizing: border-box;
+    overflow-x: auto;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: row;
+    gap: 16px;
+    scrollbar-width: thin;
+    scrollbar-color: #ff6b9d #222;
+}
+
+.geofence-feature-scroll .feature-card {
+    min-width: 260px;
+    max-width: 320px;
+    flex: 0 0 auto;
+    margin: 0;
+    box-shadow: 0 2px 12px rgba(50,6,46,0.10);
+}
+
+@media (max-width: 600px) {
+    .geofence-feature-scroll {
+        padding: 10px 4px 70px 4px;
+        gap: 10px;
+    }
+    .geofence-feature-scroll .feature-card {
+        min-width: 80vw;
+        max-width: 90vw;
+    }
+}
+
+/* Device Features Scrollable Section */
+.devices-feature-scroll {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100vw;
+    max-width: 100vw;
+    z-index: 10;
+    background: linear-gradient(0deg, rgba(32,32,32,0.96) 80%, rgba(32,32,32,0.7) 100%, transparent 100%);
+    padding: 18px 10px 90px 10px;
+    box-sizing: border-box;
+    overflow-x: auto;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: row;
+    gap: 16px;
+    scrollbar-width: thin;
+    scrollbar-color: #ff6b9d #222;
+}
+.devices-feature-scroll .feature-card {
+    min-width: 260px;
+    max-width: 320px;
+    flex: 0 0 auto;
+    margin: 0;
+    box-shadow: 0 2px 12px rgba(50,6,46,0.10);
+}
+@media (max-width: 600px) {
+    .devices-feature-scroll {
+        padding: 10px 4px 70px 4px;
+        gap: 10px;
+    }
+    .devices-feature-scroll .feature-card {
+        min-width: 80vw;
+        max-width: 90vw;
+    }
+}
+
+/* AI Route Features Scrollable Section */
+.ai-route-feature-scroll {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100vw;
+    max-width: 100vw;
+    z-index: 10;
+    background: linear-gradient(0deg, rgba(32,32,32,0.96) 80%, rgba(32,32,32,0.7) 100%, transparent 100%);
+    padding: 18px 10px 90px 10px;
+    box-sizing: border-box;
+    overflow-x: auto;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: row;
+    gap: 16px;
+    scrollbar-width: thin;
+    scrollbar-color: #ff6b9d #222;
+}
+.ai-route-feature-scroll .feature-card {
+    min-width: 260px;
+    max-width: 320px;
+    flex: 0 0 auto;
+    margin: 0;
+    box-shadow: 0 2px 12px rgba(50,6,46,0.10);
+}
+@media (max-width: 600px) {
+    .ai-route-feature-scroll {
+        padding: 10px 4px 70px 4px;
+        gap: 10px;
+    }
+    .ai-route-feature-scroll .feature-card {
+        min-width: 80vw;
+        max-width: 90vw;
+    }
+}
+
+/* --- Priority Support Fullscreen & Feature Scroll --- */
+#support .support-section {
+    padding: 0 !important;
+    margin: 0 !important;
+    height: 100vh;
+    min-height: 100vh;
+    width: 100vw;
+    max-width: 100vw;
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 1;
+    background: #000;
+    display: flex;
+    flex-direction: column;
+}
+.support-feature-scroll {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100vw;
+    max-width: 100vw;
+    z-index: 10;
+    background: linear-gradient(0deg, rgba(32,32,32,0.96) 80%, rgba(32,32,32,0.7) 100%, transparent 100%);
+    padding: 18px 10px 90px 10px;
+    box-sizing: border-box;
+    overflow-x: auto;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: row;
+    gap: 16px;
+    scrollbar-width: thin;
+    scrollbar-color: #ff6b9d #222;
+}
+.support-feature-scroll .feature-card {
+    min-width: 260px;
+    max-width: 320px;
+    flex: 0 0 auto;
+    margin: 0;
+    box-shadow: 0 2px 12px rgba(50,6,46,0.10);
+}
+.support-action-widget {
+    position: absolute;
+    top: 24px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 20;
+    max-width: 400px;
+    width: 95vw;
+    background: rgba(50,6,46,0.92);
+    border-radius: 18px;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.25);
+    padding: 18px 14px 14px 14px;
+}
+@media (max-width: 600px) {
+    .support-feature-scroll {
+        padding: 10px 4px 70px 4px;
+        gap: 10px;
+    }
+    .support-feature-scroll .feature-card {
+        min-width: 80vw;
+        max-width: 90vw;
+    }
+    .support-action-widget {
+        max-width: 98vw !important;
+        left: 1vw !important;
+        right: 1vw !important;
+        transform: none !important;
+    }
+}
+
+/* === Accessibility: Screen Reader Only === */
+.sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    border: 0;
+}
+
+/* === Reduced Motion === */
+@media (prefers-reduced-motion: reduce) {
+    .card::before,
+    .feature-icon::after,
+    .spinner {
+        animation: none;
+        transition: none;
+    }
+}
+
+/* === Responsive Adjustments === */
+@media (max-width: 768px) {
+    .hero-title {
+        font-size: 2rem;
+    }
+
+    .hero-subtitle {
+        font-size: 1rem;
+    }
+
+    .action-card {
+        padding: 0.75rem;
+    }
+
+    .action-title {
+        font-size: 1rem;
+    }
+
+    .action-desc {
+        font-size: 0.8rem;
+    }
+}
+
+@media (max-width: 576px) {
+    .card {
+        padding: 1rem;
+    }
+
+    .feature-title {
+        font-size: 1rem;
+    }
+}
+
+/* Make geofence-map full screen */
+#geofencing .geofencing-section {
+    padding: 0 !important;
+    margin: 0 !important;
+    height: 100vh;
+    min-height: 100vh;
+    width: 100vw;
+    max-width: 100vw;
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 1;
+    background: #000;
+    display: flex;
+    flex-direction: column;
+}
+
+#geofence-map {
+    width: 100vw !important;
+    height: 100vh !important;
+    min-width: 0;
+    min-height: 0;
+    position: relative;
+    z-index: 2;
+    border-radius: 0 !important;
+    margin: 0 !important;
+    box-shadow: none !important;
+    background: #000;
+}
+
+/* Scrollable feature cards overlay for geofencing */
+.geofence-feature-scroll {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100vw;
+    max-width: 100vw;
+    z-index: 10;
+    background: linear-gradient(0deg, rgba(32,32,32,0.96) 80%, rgba(32,32,32,0.7) 100%, transparent 100%);
+    padding: 18px 10px 90px 10px; /* bottom padding for nav */
+    box-sizing: border-box;
+    overflow-x: auto;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: row;
+    gap: 16px;
+    scrollbar-width: thin;
+    scrollbar-color: #ff6b9d #222;
+}
+
+.geofence-feature-scroll .feature-card {
+    min-width: 260px;
+    max-width: 320px;
+    flex: 0 0 auto;
+    margin: 0;
+    box-shadow: 0 2px 12px rgba(50,6,46,0.10);
+}
+
+@media (max-width: 600px) {
+    .geofence-feature-scroll {
+        padding: 10px 4px 70px 4px;
+        gap: 10px;
+    }
+    .geofence-feature-scroll .feature-card {
+        min-width: 80vw;
+        max-width: 90vw;
+    }
+}
+
+/* Device Features Scrollable Section */
+.devices-feature-scroll {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100vw;
+    max-width: 100vw;
+    z-index: 10;
+    background: linear-gradient(0deg, rgba(32,32,32,0.96) 80%, rgba(32,32,32,0.7) 100%, transparent 100%);
+    padding: 18px 10px 90px 10px;
+    box-sizing: border-box;
+    overflow-x: auto;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: row;
+    gap: 16px;
+    scrollbar-width: thin;
+    scrollbar-color: #ff6b9d #222;
+}
+.devices-feature-scroll .feature-card {
+    min-width: 260px;
+    max-width: 320px;
+    flex: 0 0 auto;
+    margin: 0;
+    box-shadow: 0 2px 12px rgba(50,6,46,0.10);
+}
+@media (max-width: 600px) {
+    .devices-feature-scroll {
+        padding: 10px 4px 70px 4px;
+        gap: 10px;
+    }
+    .devices-feature-scroll .feature-card {
+        min-width: 80vw;
+        max-width: 90vw;
+    }
+}
+
+/* AI Route Features Scrollable Section */
+.ai-route-feature-scroll {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100vw;
+    max-width: 100vw;
+    z-index: 10;
+    background: linear-gradient(0deg, rgba(32,32,32,0.96) 80%, rgba(32,32,32,0.7) 100%, transparent 100%);
+    padding: 18px 10px 90px 10px;
+    box-sizing: border-box;
+    overflow-x: auto;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: row;
+    gap: 16px;
+    scrollbar-width: thin;
+    scrollbar-color: #ff6b9d #222;
+}
+.ai-route-feature-scroll .feature-card {
+    min-width: 260px;
+    max-width: 320px;
+    flex: 0 0 auto;
+    margin: 0;
+    box-shadow: 0 2px 12px rgba(50,6,46,0.10);
+}
+@media (max-width: 600px) {
+    .ai-route-feature-scroll {
+        padding: 10px 4px 70px 4px;
+        gap: 10px;
+    }
+    .ai-route-feature-scroll .feature-card {
+        min-width: 80vw;
+        max-width: 90vw;
+    }
+}
+
+/* --- Priority Support Fullscreen & Feature Scroll --- */
+#support .support-section {
+    padding: 0 !important;
+    margin: 0 !important;
+    height: 100vh;
+    min-height: 100vh;
+    width: 100vw;
+    max-width: 100vw;
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 1;
+    background: #000;
+    display: flex;
+    flex-direction: column;
+}
+.support-feature-scroll {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100vw;
+    max-width: 100vw;
+    z-index: 10;
+    background: linear-gradient(0deg, rgba(32,32,32,0.96) 80%, rgba(32,32,32,0.7) 100%, transparent 100%);
+    padding: 18px 10px 90px 10px;
+    box-sizing: border-box;
+    overflow-x: auto;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: row;
+    gap: 16px;
+    scrollbar-width: thin;
+    scrollbar-color: #ff6b9d #222;
+}
+.support-feature-scroll .feature-card {
+    min-width: 260px;
+    max-width: 320px;
+    flex: 0 0 auto;
+    margin: 0;
+    box-shadow: 0 2px 12px rgba(50,6,46,0.10);
+}
+.support-action-widget {
+    position: absolute;
+    top: 24px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 20;
+    max-width: 400px;
+    width: 95vw;
+    background: rgba(50,6,46,0.92);
+    border-radius: 18px;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.25);
+    padding: 18px 14px 14px 14px;
+}
+@media (max-width: 600px) {
+    .support-feature-scroll {
+        padding: 10px 4px 70px 4px;
+        gap: 10px;
+    }
+    .support-feature-scroll .feature-card {
+        min-width: 80vw;
+        max-width: 90vw;
+    }
+    .support-action-widget {
+        max-width: 98vw !important;
+        left: 1vw !important;
+        right: 1vw !important;
+        transform: none !important;
+    }
+}
+
+/* === Accessibility: Screen Reader Only === */
+.sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    border: 0;
+}
+
+/* === Reduced Motion === */
+@media (prefers-reduced-motion: reduce) {
+    .card::before,
+    .feature-icon::after,
+    .spinner {
+        animation: none;
+        transition: none;
+    }
+}
+
+/* === Responsive Adjustments === */
+@media (max-width: 768px) {
+    .hero-title {
+        font-size: 2rem;
+    }
+
+    .hero-subtitle {
+        font-size: 1rem;
+    }
+
+    .action-card {
+        padding: 0.75rem;
+    }
+
+    .action-title {
+        font-size: 1rem;
+    }
+
+    .action-desc {
+        font-size: 0.8rem;
+    }
+}
+
+@media (max-width: 576px) {
+    .card {
+        padding: 1rem;
+    }
+
+    .feature-title {
+        font-size: 1rem;
+    }
+}
+
+/* Make geofence-map full screen */
+#geofencing .geofencing-section {
+    padding: 0 !important;
+    margin: 0 !important;
+    height: 100vh;
+    min-height: 100vh;
+    width: 100vw;
+    max-width: 100vw;
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 1;
+    background: #000;
+    display: flex;
+    flex-direction: column;
+}
+
+#geofence-map {
+    width: 100vw !important;
+    height: 100vh !important;
+    min-width: 0;
+    min-height: 0;
+    position: relative;
+    z-index: 2;
+    border-radius: 0 !important;
+    margin: 0 !important;
+    box-shadow: none !important;
+    background: #000;
+}
+
+/* Scrollable feature cards overlay for geofencing */
+.geofence-feature-scroll {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100vw;
+    max-width: 100vw;
+    z-index: 10;
+    background: linear-gradient(0deg, rgba(32,32,32,0.96) 80%, rgba(32,32,32,0.7) 100%, transparent 100%);
+    padding: 18px 10px 90px 10px; /* bottom padding for nav */
+    box-sizing: border-box;
+    overflow-x: auto;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: row;
+    gap: 16px;
+    scrollbar-width: thin;
+    scrollbar-color: #ff6b9d #222;
+}
+
+.geofence-feature-scroll .feature-card {
+    min-width: 260px;
+    max-width: 320px;
+    flex: 0 0 auto;
+    margin: 0;
+    box-shadow: 0 2px 12px rgba(50,6,46,0.10);
+}
+
+@media (max-width: 600px) {
+    .geofence-feature-scroll {
+        padding: 10px 4px 70px 4px;
+        gap: 10px;
+    }
+    .geofence-feature-scroll .feature-card {
+        min-width: 80vw;
+        max-width: 90vw;
+    }
+}
+
+/* Device Features Scrollable Section */
+.devices-feature-scroll {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100vw;
+    max-width: 100vw;
+    z-index: 10;
+    background: linear-gradient(0deg, rgba(32,32,32,0.96) 80%, rgba(32,32,32,0.7) 100%, transparent 100%);
+    padding: 18px 10px 90px 10px;
+    box-sizing: border-box;
+    overflow-x: auto;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: row;
+    gap: 16px;
+    scrollbar-width: thin;
+    scrollbar-color: #ff6b9d #222;
+}
+.devices-feature-scroll .feature-card {
+    min-width: 260px;
+    max-width: 320px;
+    flex: 0 0 auto;
+    margin: 0;
+    box-shadow: 0 2px 12px rgba(50,6,46,0.10);
+}
+@media (max-width: 600px) {
+    .devices-feature-scroll {
+        padding: 10px 4px 70px 4px;
+        gap: 10px;
+    }
+    .devices-feature-scroll .feature-card {
+        min-width: 80vw;
+        max-width: 90vw;
+    }
+}
+
+/* AI Route Features Scrollable Section */
+.ai-route-feature-scroll {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100vw;
+    max-width: 100vw;
+    z-index: 10;
+    background: linear-gradient(0deg, rgba(32,32,32,0.96) 80%, rgba(32,32,32,0.7) 100%, transparent 100%);
+    padding: 18px 10px 90px 10px;
+    box-sizing: border-box;
+    overflow-x: auto;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: row;
+    gap: 16px;
+    scrollbar-width: thin;
+    scrollbar-color: #ff6b9d #222;
+}
+.ai-route-feature-scroll .feature-card {
+    min-width: 260px;
+    max-width: 320px;
+    flex: 0 0 auto;
+    margin: 0;
+    box-shadow: 0 2px 12px rgba(50,6,46,0.10);
+}
+@media (max-width: 600px) {
+    .ai-route-feature-scroll {
+        padding: 10px 4px 70px 4px;
+        gap: 10px;
+    }
+    .ai-route-feature-scroll .feature-card {
+        min-width: 80vw;
+        max-width: 90vw;
+    }
+}
+
+/* --- Priority Support Fullscreen & Feature Scroll --- */
+#support .support-section {
+    padding: 0 !important;
+    margin: 0 !important;
+    height: 100vh;
+    min-height: 100vh;
+    width: 100vw;
+    max-width: 100vw;
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 1;
+    background: #000;
+    display: flex;
+    flex-direction: column;
+}
+.support-feature-scroll {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100vw;
+    max-width: 100vw;
+    z-index: 10;
+    background: linear-gradient(0deg, rgba(32,32,32,0.96) 80%, rgba(32,32,32,0.7) 100%, transparent 100%);
+    padding: 18px 10px 90px 10px;
+    box-sizing: border-box;
+    overflow-x: auto;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: row;
+    gap: 16px;
+    scrollbar-width: thin;
+    scrollbar-color: #ff6b9d #222;
+}
+.support-feature-scroll .feature-card {
+    min-width: 260px;
+    max-width: 320px;
+    flex: 0 0 auto;
+    margin: 0;
+    box-shadow: 0 2px 12px rgba(50,6,46,0.10);
+}
+.support-action-widget {
+    position: absolute;
+    top: 24px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 20;
+    max-width: 400px;
+    width: 95vw;
+    background: rgba(50,6,46,0.92);
+    border-radius: 18px;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.25);
+    padding: 18px 14px 14px 14px;
+}
+@media (max-width: 600px) {
+    .support-feature-scroll {
+        padding: 10px 4px 70px 4px;
+        gap: 10px;
+    }
+    .support-feature-scroll .feature-card {
+        min-width: 80vw;
+        max-width: 90vw;
+    }
+    .support-action-widget {
+        max-width: 98vw !important;
+        left: 1vw !important;
+        right: 1vw !important;
+        transform: none !important;
+    }
+}
+
+/* === Accessibility: Screen Reader Only === */
+.sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    border: 0;
+}
+
+/* === Reduced Motion === */
+@media (prefers-reduced-motion: reduce) {
+    .card::before,
+    .feature-icon::after,
+    .spinner {
+        animation: none;
+        transition: none;
+    }
+}
+
+/* === Responsive Adjustments === */
+@media (max-width: 768px) {
+    .hero-title {
+        font-size: 2rem;
+    }
+
+    .hero-subtitle {
+        font-size: 1rem;
+    }
+
+    .action-card {
+        padding: 0.75rem;
+    }
+
+    .action-title {
+        font-size: 1rem;
+    }
+
+    .action-desc {
+        font-size: 0.8rem;
+    }
+}
+
+@media (max-width: 576px) {
+    .card {
+        padding: 1rem;
+    }
+
+    .feature-title {
+        font-size: 1rem;
+    }
+}
+
+/* Make geofence-map full screen */
+#geofencing .geofencing-section {
+    padding: 0 !important;
+    margin: 0 !important;
+    height: 100vh;
+    min-height: 100vh;
+    width: 100vw;
+    max-width: 100vw;
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 1;
+    background: #000;
+    display: flex;
+    flex-direction: column;
+}
+
+#geofence-map {
+    width: 100vw !important;
+    height: 100vh !important;
+    min-width: 0;
+    min-height: 0;
+    position: relative;
+    z-index: 2;
+    border-radius: 0 !important;
+    margin: 0 !important;
+    box-shadow: none !important;
+    background: #000;
+}
+
+/* Scrollable feature cards overlay for geofencing */
+.geofence-feature-scroll {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100vw;
+    max-width: 100vw;
+    z-index: 10;
+    background: linear-gradient(0deg, rgba(32,32,32,0.96) 80%, rgba(32,32,32,0.7) 100%, transparent 100%);
+    padding: 18px 10px 90px 10px; /* bottom padding for nav */
+    box-sizing: border-box;
+    overflow-x: auto;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: row;
+    gap: 16px;
+    scrollbar-width: thin;
+    scrollbar-color: #ff6b9d #222;
+}
+
+.geofence-feature-scroll .feature-card {
+    min-width: 260px;
+    max-width: 320px;
+    flex: 0 0 auto;
+    margin: 0;
+    box-shadow: 0 2px 12px rgba(50,6,46,0.10);
+}
+
+@media (max-width: 600px) {
+    .geofence-feature-scroll {
+        padding: 10px 4px 70px 4px;
+        gap: 10px;
+    }
+    .geofence-feature-scroll .feature-card {
+        min-width: 80vw;
+        max-width: 90vw;
+    }
+}
+
+/* Device Features Scrollable Section */
+.devices-feature-scroll {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100vw;
+    max-width: 100vw;
+    z-index: 10;
+    background: linear-gradient(0deg, rgba(32,32,32,0.96) 80%, rgba(32,32,32,0.7) 100%, transparent 100%);
+    padding: 18px 10px 90px 10px;
+    box-sizing: border-box;
+    overflow-x: auto;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: row;
+    gap: 16px;
+    scrollbar-width: thin;
+    scrollbar-color: #ff6b9d #222;
+}
+.devices-feature-scroll .feature-card {
+    min-width: 260px;
+    max-width: 320px;
+    flex: 0 0 auto;
+    margin: 0;
+    box-shadow: 0 2px 12px rgba(50,6,46,0.10);
+}
+@media (max-width: 600px) {
+    .devices-feature-scroll {
+        padding: 10px 4px 70px 4px;
+        gap: 10px;
+    }
+    .devices-feature-scroll .feature-card {
+        min-width: 80vw;
+        max-width: 90vw;
+    }
+}
+
+/* AI Route Features Scrollable Section */
+.ai-route-feature-scroll {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100vw;
+    max-width: 100vw;
+    z-index: 10;
+    background: linear-gradient(0deg, rgba(32,32,32,0.96) 80%, rgba(32,32,32,0.7) 100%, transparent 100%);
+    padding: 18px 10px 90px 10px;
+    box-sizing: border-box;
+    overflow-x: auto;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: row;
+    gap: 16px;
+    scrollbar-width: thin;
+    scrollbar-color: #ff6b9d #222;
+}
+.ai-route-feature-scroll .feature-card {
+    min-width: 260px;
+    max-width: 320px;
+    flex: 0 0 auto;
+    margin: 0;
+    box-shadow: 0 2px 12px rgba(50,6,46,0.10);
+}
+@media (max-width: 600px) {
+    .ai-route-feature-scroll {
+        padding: 10px 4px 70px 4px;
+        gap: 10px;
+    }
+    .ai-route-feature-scroll .feature-card {
+        min-width: 80vw;
+        max-width: 90vw;
+    }
+}
+
+/* --- Priority Support Fullscreen & Feature Scroll --- */
+#support .support-section {
+    padding: 0 !important;
+    margin: 0 !important;
+    height: 100vh;
+    min-height: 100vh;
+    width: 100vw;
+    max-width: 100vw;
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 1;
+    background: #000;
+    display: flex;
+    flex-direction: column;
+}
+.support-feature-scroll {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100vw;
+    max-width: 100vw;
+    z-index: 10;
+    background: linear-gradient(0deg, rgba(32,32,32,0.96) 80%, rgba(32,32,32,0.7) 100%, transparent 100%);
+    padding: 18px 10px 90px 10px;
+    box-sizing: border-box;
+    overflow-x: auto;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: row;
+    gap: 16px;
+    scrollbar-width: thin;
+    scrollbar-color: #ff6b9d #222;
+}
+.support-feature-scroll .feature-card {
+    min-width: 260px;
+    max-width: 320px;
+    flex: 0 0 auto;
+    margin: 0;
+    box-shadow: 0 2px 12px rgba(50,6,46,0.10);
+}
+.support-action-widget {
+    position: absolute;
+    top: 24px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 20;
+    max-width: 400px;
+    width: 95vw;
+    background: rgba(50,6,46,0.92);
+    border-radius: 18px;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.25);
+    padding: 18px 14px 14px 14px;
+}
+@media (max-width: 600px) {
+    .support-feature-scroll {
+        padding: 10px 4px 70px 4px;
+        gap: 10px;
+    }
+    .support-feature-scroll .feature-card {
+        min-width: 80vw;
+        max-width: 90vw;
+    }
+    .support-action-widget {
+        max-width: 98vw !important;
+        left: 1vw !important;
+        right: 1vw !important;
+        transform: none !important;
+    }
+}
+
+/* === Accessibility: Screen Reader Only === */
+.sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    border: 0;
+}
+
+/* === Reduced Motion === */
+@media (prefers-reduced-motion: reduce) {
+    .card::before,
+    .feature-icon::after,
+    .spinner {
+        animation: none;
+        transition: none;
+    }
+}
+
+/* === Responsive Adjustments === */
+@media (max-width: 768px) {
+    .hero-title {
+        font-size: 2rem;
+    }
+
+    .hero-subtitle {
+        font-size: 1rem;
+    }
+
+    .action-card {
+        padding: 0.75rem;
+    }
+
+    .action-title {
+        font-size: 1rem;
+    }
+
+    .action-desc {
+        font-size: 0.8rem;
+    }
+}
+
+@media (max-width: 576px) {
+    .card {
+        padding: 1rem;
+    }
+
+    .feature-title {
+        font-size: 1rem;
+    }
+}
+
+/* Make geofence-map full screen */
+#geofencing .geofencing-section {
+    padding: 0 !important;
+    margin: 0 !important;
+    height: 100vh;
+    min-height: 100vh;
+    width: 100vw;
+    max-width: 100vw;
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 1;
+    background: #000;
+    display: flex;
+    flex-direction: column;
+}
+
+#geofence-map {
+    width: 100vw !important;
+    height: 100vh !important;
+    min-width: 0;
+    min-height: 0;
+    position: relative;
+    z-index: 2;
+    border-radius: 0 !important;
+    margin: 0 !important;
+    box-shadow: none !important;
+    background: #000;
+}
+
+/* Scrollable feature cards overlay for geofencing */
+.geofence-feature-scroll {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100vw;
+    max-width: 100vw;
+    z-index: 10;
+    background: linear-gradient(0deg, rgba(32,32,32,0.96) 80%, rgba(32,32,32,0.7) 100%, transparent 100%);
+    padding: 18px 10px 90px 10px; /* bottom padding for nav */
+    box-sizing: border-box;
+    overflow-x: auto;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: row;
+    gap: 16px;
+    scrollbar-width: thin;
+    scrollbar-color: #ff6b9d #222;
+}
+
+.geofence-feature-scroll .feature-card {
+    min-width: 260px;
+    max-width: 320px;
+    flex: 0 0 auto;
+    margin: 0;
+    box-shadow: 0 2px 12px rgba(50,6,46,0.10);
+}
+
+@media (max-width: 600px) {
+    .geofence-feature-scroll {
+        padding: 10px 4px 70px 4px;
+        gap: 10px;
+    }
+    .geofence-feature-scroll .feature-card {
+        min-width: 80vw;
+        max-width: 90vw;
+    }
+}
+
+/* Device Features Scrollable Section */
+.devices-feature-scroll {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100vw;
+    max-width: 100vw;
+    z-index: 10;
+    background: linear-gradient(0deg, rgba(32,32,32,0.96) 80%, rgba(32,32,32,0.7) 100%, transparent 100%);
+    padding: 18px 10px 90px 10px;
+    box-sizing: border-box;
+    overflow-x: auto;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: row;
+    gap: 16px;
+    scrollbar-width: thin;
+    scrollbar-color: #ff6b9d #222;
+}
+.devices-feature-scroll .feature-card {
+    min-width: 260px;
+    max-width: 320px;
+    flex: 0 0 auto;
+    margin: 0;
+    box-shadow: 0 2px 12px rgba(50,6,46,0.10);
+}
+@media (max-width: 600px) {
+    .devices-feature-scroll {
+        padding: 10px 4px 70px 4px;
+        gap: 10px;
+    }
+    .devices-feature-scroll .feature-card {
+        min-width: 80vw;
+        max-width: 90vw;
+    }
+}
+
+/* AI Route Features Scrollable Section */
+.ai-route-feature-scroll {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100vw;
+    max-width: 100vw;
+    z-index: 10;
+    background: linear-gradient(0deg, rgba(32,32,32,0.96) 80%, rgba(32,32,32,0.7) 100%, transparent 100%);
+    padding: 18px 10px 90px 10px;
+    box-sizing: border-box;
+    overflow-x: auto;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: row;
+    gap: 16px;
+    scrollbar-width: thin;
+    scrollbar-color: #ff6b9d #222;
+}
+.ai-route-feature-scroll .feature-card {
+    min-width: 260px;
+    max-width: 320px;
+    flex: 0 0 auto;
+    margin: 0;
+    box-shadow: 0 2px 12px rgba(50,6,46,0.10);
+}
+@media (max-width: 600px) {
+    .ai-route-feature-scroll {
+        padding: 10px 4px 70px 4px;
+        gap: 10px;
+    }
+    .ai-route-feature-scroll .feature-card {
+        min-width: 80vw;
+        max-width: 90vw;
+    }
+}
+
+/* --- Priority Support Fullscreen & Feature Scroll --- */
+#support .support-section {
+    padding: 0 !important;
+    margin: 0 !important;
+    height: 100vh;
+    min-height: 100vh;
+    width: 100vw;
+    max-width: 100vw;
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 1;
+    background: #000;
+    display: flex;
+    flex-direction: column;
+}
+.support-feature-scroll {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100vw;
+    max-width: 100vw;
+    z-index: 10;
+    background: linear-gradient(0deg, rgba(32,32,32,0.96) 80%, rgba(32,32,32,0.7) 100%, transparent 100%);
+    padding: 18px 10px 90px 10px;
+    box-sizing: border-box;
+    overflow-x: auto;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: row;
+    gap: 16px;
+    scrollbar-width: thin;
+    scrollbar-color: #ff6b9d #222;
+}
+.support-feature-scroll .feature-card {
+    min-width: 260px;
+    max-width: 320px;
+    flex: 0 0 auto;
+    margin: 0;
+    box-shadow: 0 2px 12px rgba(50,6,46,0.10);
+}
+.support-action-widget {
+    position: absolute;
+    top: 24px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 20;
+    max-width: 400px;
+    width: 95vw;
+    background: rgba(50,6,46,0.92);
+    border-radius: 18px;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.25);
+    padding: 18px 14px 14px 14px;
+}
+@media (max-width: 600px) {
+    .support-feature-scroll {
+        padding: 10px 4px 70px 4px;
+        gap: 10px;
+    }
+    .support-feature-scroll .feature-card {
+        min-width: 80vw;
+        max-width: 90vw;
+    }
+    .support-action-widget {
+        max-width: 98vw !important;
+        left: 1vw !important;
+        right: 1vw !important;
+        transform: none !important;
     }
 }
