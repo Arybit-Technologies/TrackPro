@@ -95,7 +95,7 @@
     <!-- Electron Specific -->
     <platform name="electron">
         <preference name="ElectronSplashScreen" value="true" />
-        <preference name="ElectronSplashScreenImage" value="www/img/splash.png" />
+        <preference name="ElectronSplashScreenImage" value="www/img/logo.png" />
         <preference name="ElectronSplashScreenBackgroundColor" value="#32062e" />
         <preference name="ElectronSplashScreenDelay" value="3000" />
     </platform>

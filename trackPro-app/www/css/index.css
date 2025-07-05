@@ -415,7 +415,7 @@ a:focus {
     flex-direction: column;
 }
 
-#tracking #map {
+#tracking #tracking-map {
     flex: 1 1 auto;
     width: 100vw !important;
     height: 100vh !important;
@@ -564,7 +564,7 @@ a:focus {
         font-size: 1.1rem;
     }
 
-    #map {
+    #tracking-map {
         height: calc(100vh - 140px); /* Adjust for smaller screens */
     }
 }

@@ -2,8 +2,8 @@
 class Database {
     private $host = 'localhost';
     private $port = 3306;
-    private $db_name = 'eggwzegc_arybit';
-    private $username = 'eggwzegc_arybit';
+    private $db_name = 'arybitc2_trackpro';
+    private $username = 'arybitc2_trackpro';
     private $password = 'Emjye@2453';
     private $conn;
 

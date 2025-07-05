@@ -29,6 +29,8 @@ class TrackProApp {
   #websocketUrl = 'wss://trackpro.arybit.co.ke/ws';
   #timeUpdateInterval = null;
   #map = null;
+  #trackingMap = null;
+
   #marker = null;
   #geofence = null;
   #currentLocation = null;
@@ -79,8 +81,8 @@ class TrackProApp {
     this.setupNavigationListeners();
     this.setupQuickActionCards();
     this.setupSosButton();
-    // this.initializeLoggingPanel(); // Uncomment if logging panel is needed
     this.showScreen('home');
+    this.initializeLoggingPanel(); // Uncomment if logging panel is needed
     //alert('TrackProApp initialized successfully!');
   }
 
@@ -288,24 +290,31 @@ class TrackProApp {
    * Initialize the Google Map for the tracking screen.
    */
   async initMap() {
-    if (this.#map) {
-      this.#map.setCenter({
-        lat: this.#currentLocation?.latitude || this.#defaultLocation.latitude,
-        lng: this.#currentLocation?.longitude || this.#defaultLocation.longitude,
-      });
-      return;
+    // Only clear overlays and marker, but do NOT set this.#trackingMap = null here
+    if (this.#trackingMap) {
+      if (this.#marker) {
+        this.#marker.setMap(null);
+        this.#marker = null;
+      }
+      if (this.#geofence) {
+        this.#geofence.setMap(null);
+        this.#geofence = null;
+      }
+      // Do NOT set this.#trackingMap = null here!
     }
 
-    const mapEl = document.getElementById('map');
+    const mapEl = document.getElementById('tracking-map');
     if (!mapEl) {
-      console.error('Map element #map not found.');
+      console.error('Map element #tracking-map not found.');
       return;
     }
 
     try {
       await TrackProApp.loadGoogleMapsApi(this.getApiKey());
       const defaultLatLng = await this.getCurrentLocation().catch(() => this.#defaultLocation);
-      this.#map = new google.maps.Map(mapEl, {
+      const logoUrl = 'img/logo.png'; // Use your custom logo
+      // Only set this.#trackingMap here!
+      this.#trackingMap = new google.maps.Map(mapEl, {
         center: { lat: defaultLatLng.latitude, lng: defaultLatLng.longitude },
         zoom: 13,
         mapTypeId: 'roadmap',
@@ -313,29 +322,37 @@ class TrackProApp {
         zoomControl: true,
       });
       this.#marker = new google.maps.Marker({
-        map: this.#map,
+        map: this.#trackingMap,
         position: { lat: defaultLatLng.latitude, lng: defaultLatLng.longitude },
         title: 'You are here',
+        icon: {
+          url: logoUrl,
+          scaledSize: new google.maps.Size(48, 48), // Adjust size as needed
+          origin: new google.maps.Point(0, 0),
+          anchor: new google.maps.Point(24, 24),
+        },
       });
-      this.updateMapLocation();
-      this.setupGeofence();
-      this.watchPosition();
+
+      // Only start watching position, do not replace #trackingMap in watchPosition
+      this.watchPosition('tracking');
     } catch (error) {
       console.error('Map initialization failed:', error);
       this.showStatus('❌ Failed to load map: ' + error.message, 'danger');
     }
   }
 
+  
+
   /**
    * Initialize the WebSocket connection for real-time updates.
    */
   initWebSocket() {
     if (this.#websocket && this.#websocket.readyState === WebSocket.OPEN) {
-      console.log('WebSocket already open.');
+      //console.log('WebSocket already open.');
       return;
     }
     if (this.#websocket && this.#websocket.readyState === WebSocket.CONNECTING) {
-      console.log('WebSocket is already connecting.');
+      //console.log('WebSocket is already connecting.');
       return;
     }
 
@@ -343,9 +360,9 @@ class TrackProApp {
       this.#websocket = new WebSocket(this.#websocketUrl);
 
       this.#websocket.onopen = () => {
-        console.log('WebSocket connected successfully.');
-        this.updateConnectionStatus();
-        this.showStatus('Connected to tracking server.', 'success');
+        //console.log('WebSocket connected successfully.');
+        //this.updateConnectionStatus();
+        //this.showStatus('Connected to tracking server.', 'success');
       };
 
       this.#websocket.onmessage = (event) => {
@@ -365,34 +382,35 @@ class TrackProApp {
             console.warn('Received unknown or malformed WebSocket message:', data);
           }
         } catch (error) {
-          console.error('Error parsing WebSocket message:', error);
-          this.showError('Failed to process data from server.');
+          //console.error('Error parsing WebSocket message:', error);
+          //this.showError('Failed to process data from server.');
         }
       };
 
       this.#websocket.onerror = (error) => {
-        console.error('WebSocket error:', error);
-        this.updateConnectionStatus();
-        this.showError('WebSocket connection error. Attempting to reconnect...');
+        //console.error('WebSocket error:', error);
+        //this.updateConnectionStatus();
+        //this.showError('WebSocket connection error. Attempting to reconnect...');
       };
 
       this.#websocket.onclose = (event) => {
-        console.log('WebSocket closed:', event.code, event.reason);
-        this.updateConnectionStatus();
-        this.showStatus('Disconnected from tracking server. Reconnecting in 5 seconds...', 'warning');
+        //console.log('WebSocket closed:', event.code, event.reason);
+        //this.updateConnectionStatus();
+        //this.showStatus('Disconnected from tracking server. Reconnecting in 5 seconds...', 'warning');
         setTimeout(() => this.initWebSocket(), 5000);
       };
     } catch (error) {
-      console.error('WebSocket initialization failed:', error);
-      this.showError('Failed to establish WebSocket connection.');
+      //console.error('WebSocket initialization failed:', error);
+      //this.showError('Failed to establish WebSocket connection.');
       setTimeout(() => this.initWebSocket(), 5000);
     }
   }
 
   /**
    * Start watching the device's geolocation.
+   * @param {string} [context] - Optional: 'tracking', 'history', 'aiRoute', 'geofence'
    */
-  watchPosition() {
+  watchPosition(context = 'tracking') {
     if (!navigator.geolocation) {
       console.warn('Geolocation not supported on this device.');
       this.showError('Geolocation is not supported on this device.');
@@ -411,33 +429,58 @@ class TrackProApp {
           accuracy: pos.coords.accuracy,
           timestamp: pos.timestamp,
         };
-        this.updateMapLocation();
+
+        // Only update the map for the correct context, do not replace #trackingMap
+        if (context === 'tracking' && this.#trackingMap) {
+          this.updateMapLocation();
+        } else if (context === 'history' && this.#historyMap) {
+          // Optionally implement update for history map
+        } else if (context === 'aiRoute' && this.#aiRouteMap) {
+          // Optionally implement update for aiRoute map
+        } else if (context === 'geofence' && this.#geofenceMap) {
+          // Optionally implement update for geofence map
+        }
+
         this.updateLocationDetails();
         this.sendLocationToServer(this.#currentLocation);
       },
       (err) => this.handleGeoError(err),
-      { enableHighAccuracy: true, maximumAge: 15000, timeout: 10000 }
+      { enableHighAccuracy: true, maximumAge: 15000, timeout: 20000 }
     );
-    console.log('Geolocation watch started.');
+    console.log('Geolocation watch started for context:', context);
   }
 
   /**
    * Updates map with current location.
+   * Customizes marker title to show coordinates and accuracy.
+   * Also updates fleet markers.
    */
   updateMapLocation() {
-    if (!this.#currentLocation || !this.#map) return;
+    if (!this.#currentLocation || !this.#trackingMap) return;
     const { latitude, longitude, accuracy } = this.#currentLocation;
     const latLng = { lat: latitude, lng: longitude };
-    this.#map.setCenter(latLng);
-    this.#map.setZoom(15);
+    this.#trackingMap.setCenter(latLng);
+    this.#trackingMap.setZoom(15);
+
+    const logoUrl = 'img/logo.png'; // Use your custom logo
+
+    // Custom marker title with coordinates and accuracy
+    const markerTitle = `You are here: ${latitude.toFixed(6)}, ${longitude.toFixed(6)} (±${accuracy}m)`;
 
     if (this.#marker) {
       this.#marker.setPosition(latLng);
+      this.#marker.setTitle(markerTitle);
     } else {
       this.#marker = new google.maps.Marker({
         position: latLng,
-        map: this.#map,
-        title: 'You are here',
+        map: this.#trackingMap,
+        title: markerTitle,
+        icon: {
+          url: logoUrl,
+          scaledSize: new google.maps.Size(48, 48), // Adjust size as needed
+          origin: new google.maps.Point(0, 0),
+          anchor: new google.maps.Point(24, 24),
+        },
       });
     }
 
@@ -445,36 +488,154 @@ class TrackProApp {
     const geofenceStatus = statusEl?.textContent || 'Inactive';
     const geofenceColor = statusEl?.style.color || '#28a745';
 
+    // Theme detection for InfoWindow
+    const isDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+    const infoBg = isDark ? '#1e1e1e' : '#fff';
+    const infoText = isDark ? '#f1f1f1' : '#222';
+    const infoBorder = isDark ? '#333' : '#ddd';
     const themeColor = '#32062e';
-    const logoUrl = 'icons/icon-32x32.png';
+
+    // Square, theme-aware InfoWindow
     const infoContent = `
-      <div class="d-flex flex-wrap gap-2 align-items-center" style="font-size:0.95em;">
-        <img src="${logoUrl}" alt="TrackPro Logo" style="width:24px;height:24px;border-radius:6px;background:${themeColor};margin-right:6px;box-shadow:0 2px 8px rgba(50,6,46,0.12);">
-        <span class="badge bg-primary bg-gradient">
-          <i class="fas fa-map-marker-alt"></i> ${latitude.toFixed(6)}, ${longitude.toFixed(6)}
-        </span>
-        <span class="badge bg-secondary">
-          <i class="fas fa-bullseye"></i> ±${accuracy}m
-        </span>
-        <span class="badge" style="background:#28a7451a;color:${geofenceColor};font-weight:600;">
-          ${geofenceStatus}
-        </span>
+      <div style="
+        min-width:180px; max-width:240px; min-height:120px;
+        background:${infoBg};
+        color:${infoText};
+        border-radius:14px;
+        border:1.5px solid ${infoBorder};
+        box-shadow:0 4px 18px rgba(50,6,46,0.13);
+        padding:18px 14px 14px 14px;
+        display:flex; flex-direction:column; align-items:center; justify-content:center;
+        font-size:1em;
+        text-align:center;
+      ">
+        <img src="${logoUrl}" alt="TrackPro Logo"
+          style="width:38px;height:38px;border-radius:8px;background:${themeColor};margin-bottom:10px;box-shadow:0 2px 8px rgba(50,6,46,0.12);">
+        <div style="font-weight:700;font-size:1.08em;margin-bottom:2px;">You are here</div>
+        <div style="font-size:0.97em;color:${isDark ? '#ccc' : '#666'};margin-bottom:8px;">
+          ${latitude.toFixed(6)}, ${longitude.toFixed(6)}
+        </div>
+        <div style="display:flex;flex-wrap:wrap;gap:6px;justify-content:center;">
+          <span class="badge bg-secondary" style="font-size:0.93em;">
+            <i class="fas fa-bullseye"></i> ±${accuracy}m
+          </span>
+          <span class="badge" style="background:#28a7451a;color:${geofenceColor};font-weight:600;font-size:0.93em;">
+            ${geofenceStatus}
+          </span>
+        </div>
       </div>
     `;
     if (this.infoWindow) this.infoWindow.close();
     this.infoWindow = new google.maps.InfoWindow({ content: infoContent });
-    this.infoWindow.open(this.#map, this.#marker);
+    this.infoWindow.open(this.#trackingMap, this.#marker);
+
+    // --- Fleet Markers ---
+    const fleet = [
+      {
+        name: 'Vehicle 1',
+        desc: 'Toyota Prado - KDA 123A',
+        lat: -1.286389,
+        lng: 36.817223,
+        image: 'icons/icon-32x32.png',
+        status: 'Active',
+        geofence: 'Out',
+        accuracy: 5
+      },
+      {
+        name: 'Vehicle 2',
+        desc: 'Isuzu NQR - KDB 456B',
+        lat: -1.287000,
+        lng: 36.818000,
+        image: 'icons/icon-32x32.png',
+        status: 'Active',
+        geofence: 'In',
+        accuracy: 7
+      },
+    ];
+
+    // Remove previous fleet markers
+    this.#fleetMarkers.forEach((m) => m.setMap(null));
+    this.#fleetMarkers = [];
+
+    // Add new markers for each vehicle
+    fleet.forEach((vehicle) => {
+      const themeColor = '#32062e';
+      const logoUrl = vehicle.image || 'icons/icon-32x32.png';
+      const isDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+      const infoBg = isDark ? '#1e1e1e' : '#fff';
+      const infoText = isDark ? '#f1f1f1' : '#222';
+      const infoBorder = isDark ? '#333' : '#ddd';
+
+      const infoContent = `
+        <div style="
+          min-width:180px; max-width:240px; min-height:120px;
+          background:${infoBg};
+          color:${infoText};
+          border-radius:14px;
+          border:1.5px solid ${infoBorder};
+          box-shadow:0 4px 18px rgba(50,6,46,0.13);
+          padding:18px 14px 14px 14px;
+          display:flex; flex-direction:column; align-items:center; justify-content:center;
+          font-size:1em;
+          text-align:center;
+        ">
+          <img src="${logoUrl}" alt="TrackPro Logo"
+            style="width:38px;height:38px;border-radius:8px;background:${themeColor};margin-bottom:10px;box-shadow:0 2px 8px rgba(50,6,46,0.12);">
+          <div style="font-weight:700;font-size:1.08em;margin-bottom:2px;">${vehicle.name}</div>
+          <div style="font-size:0.97em;color:${isDark ? '#ccc' : '#666'};margin-bottom:8px;">${vehicle.desc || ''}</div>
+          <div style="display:flex;flex-wrap:wrap;gap:6px;justify-content:center;">
+            <span class="badge bg-primary bg-gradient" style="font-size:0.93em;">
+              <i class="fas fa-map-marker-alt"></i> ${vehicle.lat.toFixed(6)}, ${vehicle.lng.toFixed(6)}
+            </span>
+            <span class="badge bg-secondary" style="font-size:0.93em;">
+              <i class="fas fa-bullseye"></i> ±${vehicle.accuracy || 'N/A'}m
+            </span>
+            <span class="badge" style="background:#28a7451a;color:${vehicle.geofence === 'In' ? '#28a745' : '#dc3545'};font-weight:600;font-size:0.93em;">
+              Geofence: ${vehicle.geofence || 'N/A'}
+            </span>
+            <span class="badge" style="background:#28a7451a;color:#28a745;font-weight:600;font-size:0.93em;">
+              ${vehicle.status || 'Active'}
+            </span>
+          </div>
+        </div>
+      `;
+
+      const marker = new google.maps.Marker({
+        position: { lat: vehicle.lat, lng: vehicle.lng },
+        map: this.#trackingMap,
+        title: vehicle.name,
+        icon: {
+          url: logoUrl,
+          scaledSize: new google.maps.Size(48, 48),
+          origin: new google.maps.Point(0, 0),
+          anchor: new google.maps.Point(24, 24),
+        },
+      });
+
+      marker.addListener('click', () => {
+        if (this.infoWindow) this.infoWindow.close();
+        this.infoWindow = new google.maps.InfoWindow({ content: infoContent });
+        this.infoWindow.open(this.#trackingMap, marker);
+      });
+
+      this.#fleetMarkers.push(marker);
+    });
+    // --- End Fleet Markers ---
 
     this.checkGeofence();
+    this.setupGeofence();
   }
+  // ...existing code...
 
   /**
    * Sets up geofence around safe zone.
    */
   setupGeofence() {
     const location = this.#currentLocation;
-    const map = this.#map;
+    const map = this.#trackingMap;
     const safeZone = this.#safeZone;
+
+    console.log('setupGeofence called', { location, map, safeZone });
 
     if (!location || !map) {
       console.warn('No location or map for geofence');
@@ -682,11 +843,17 @@ class TrackProApp {
         <span>
           <button id="log-panel-clear" title="Clear logs" style="border: none; background: none; color: #FFFFFF; font-size: 1.1em; cursor: pointer;" aria-label="Clear logs">🧹</button>
           <button id="log-panel-toggle" title="Toggle panel" style="border: none; background: none; color: #FFFFFF; font-size: 1.1em; cursor: pointer;" aria-label="Toggle log panel">⬇</button>
+          <button id="log-panel-close" title="Close panel" style="border: none; background: none; color: #FFFFFF; font-size: 1.1em; cursor: pointer;" aria-label="Close log panel">❌</button>
+
         </span>
       </div>
       <div id="vigilia-log-body" style="padding: 10px; overflow-y: auto; max-height: 250px; font-size: 0.9em; background: #FFFFFF;" role="log"></div>
     `;
     document.body.appendChild(logPanel);
+
+    document.getElementById('log-panel-close').onclick = () => {
+      logPanel.style.display = 'none';
+    };
 
     let isDragging = false,
       dragOffsetX = 0,
@@ -771,34 +938,6 @@ class TrackProApp {
   }
 
   /**
-   * Open the support contact options.
-   */
-  openSupport() {
-    this.showStatus('Support feature is under development.', 'info');
-  }
-
-  /**
-   * Open the account settings.
-   */
-  openAccount() {
-    this.showStatus('Account feature is under development.', 'info');
-  }
-
-  /**
-   * Open the app settings.
-   */
-  openSettings() {
-    this.showStatus('Settings feature is under development.', 'info');
-  }
-
-  /**
-   * Open the alerts screen.
-   */
-  openAlerts() {
-    this.showScreen('alerts');
-  }
-
-  /**
    * Toggle the app language between English and Swahili.
    */
   toggleLanguage() {
@@ -851,6 +990,15 @@ class TrackProApp {
    * Initialize the geofencing map and display sample geofence zones.
    */
   async initGeofenceMap() {
+    // Remove previous geofence map and overlays
+    if (this.#geofenceMap) {
+      if (this.#geofenceOverlays && Array.isArray(this.#geofenceOverlays)) {
+        this.#geofenceOverlays.forEach((overlay) => overlay.setMap(null));
+        this.#geofenceOverlays = [];
+      }
+      this.#geofenceMap = null;
+    }
+
     const mapEl = document.getElementById('geofence-map');
     if (!mapEl) {
       console.error('Geofence map element #geofence-map not found.');
@@ -1029,105 +1177,9 @@ class TrackProApp {
 
     sosBtn.addEventListener('click', () => {
       this.showScreen('tracking');
-      this.#sosMapTries = 0;
-      this.tryAddFleetMarkers();
+      //this.#sosMapTries = 0;
+      //this.tryAddFleetMarkers();
     });
-  }
-
-  /**
-   * Attempt to add fleet markers to the map, retrying if the map is not ready.
-   */
-  tryAddFleetMarkers() {
-    const map = this.#map;
-    if (map && window.google && window.google.maps) {
-      const scroll = document.querySelector('.tracking-feature-scroll');
-      if (scroll) scroll.scrollIntoView({ behavior: 'smooth', block: 'end' });
-
-      // Example fleet data (replace with your real fleet data)
-      const fleet = [
-        {
-          name: 'Vehicle 1',
-          desc: 'Toyota Prado - KDA 123A',
-          lat: -1.286389,
-          lng: 36.817223,
-          image: 'icons/icon-32x32.png',
-          status: 'Active',
-          geofence: 'Out',
-          accuracy: 5
-        },
-        {
-          name: 'Vehicle 2',
-          desc: 'Isuzu NQR - KDB 456B',
-          lat: -1.287000,
-          lng: 36.818000,
-          image: 'icons/icon-32x32.png',
-          status: 'Active',
-          geofence: 'In',
-          accuracy: 7
-        },
-      ];
-
-      // Remove previous fleet markers
-      this.#fleetMarkers.forEach((m) => m.setMap(null));
-      this.#fleetMarkers = [];
-
-      // Add new markers for each vehicle
-      fleet.forEach((vehicle) => {
-        const themeColor = '#32062e';
-        const logoUrl = vehicle.image || 'icons/icon-32x32.png';
-        const infoContent = `
-          <div class="d-flex flex-wrap gap-2 align-items-center" style="font-size:0.95em;">
-            <img src="${logoUrl}" alt="TrackPro Logo" style="width:24px;height:24px;border-radius:6px;background:${themeColor};margin-right:6px;box-shadow:0 2px 8px rgba(50,6,46,0.12);">
-            <span class="badge bg-primary bg-gradient">
-              <i class="fas fa-map-marker-alt"></i> ${vehicle.lat.toFixed(6)}, ${vehicle.lng.toFixed(6)}
-            </span>
-            <span class="badge bg-secondary">
-              <i class="fas fa-bullseye"></i> ±${vehicle.accuracy || 'N/A'}m
-            </span>
-            <span class="badge" style="background:#28a7451a;color:#28a745;font-weight:600;">
-              ${vehicle.status || 'Active'}
-            </span>
-            <span class="badge" style="background:${vehicle.geofence === 'In' ? '#28a7451a' : '#dc35451a'};color:${vehicle.geofence === 'In' ? '#28a745' : '#dc3545'};">
-              Geofence: ${vehicle.geofence || 'N/A'}
-            </span>
-          </div>
-        `;
-
-        const marker = new google.maps.Marker({
-          position: { lat: vehicle.lat, lng: vehicle.lng },
-          map: map,
-          title: vehicle.name,
-          icon: {
-            url: logoUrl,
-            scaledSize: new google.maps.Size(40, 40),
-            origin: new google.maps.Point(0, 0),
-            anchor: new google.maps.Point(20, 20),
-          },
-          label: {
-            text: vehicle.name,
-            color: '#fff',
-            fontWeight: 'bold',
-            fontSize: '12px',
-          },
-        });
-
-        const info = new google.maps.InfoWindow({
-          content: infoContent,
-        });
-        marker.addListener('click', () => {
-          info.open(map, marker);
-        });
-
-        this.#fleetMarkers.push(marker);
-      });
-
-      this.showStatus('Fleet vehicles displayed on the map.', 'success');
-    } else if (this.#sosMapTries < 10) {
-      this.#sosMapTries++;
-      setTimeout(() => this.tryAddFleetMarkers(), 200);
-    } else {
-      this.showStatus('Map not ready. Please try again.', 'warning');
-    }
   }
 
   /**
